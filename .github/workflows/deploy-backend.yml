@@ -43,8 +43,9 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
+          DEPLOY_PATH="${DEPLOY_PATH:-/var/www/aoe2quiz-server}"
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "mkdir -p $DEPLOY_PATH"
 
       - name: Copy files to VPS
@@ -52,8 +53,9 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
+          DEPLOY_PATH="${DEPLOY_PATH:-/var/www/aoe2quiz-server}"
           sshpass -p "$VPS_PASSWORD" rsync -avz \
             -e "ssh -o StrictHostKeyChecking=no" \
             server/package.json \
@@ -66,22 +68,11 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" << 'REMOTE'
-            set -e
-            cd ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
-            # Подставляем путь из секрета через env на runner
-            true
-          REMOTE
-        # Подстановка переменной внутри heredoc не сработает - используем отдельную команду
-        run: |
-          DEPLOY_PATH="${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}"
-          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+          DEPLOY_PATH="${DEPLOY_PATH:-/var/www/aoe2quiz-server}"
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
             "cd $DEPLOY_PATH && npm ci --omit=dev && (pm2 restart aoe2quiz-server || pm2 start dist/index.js --name aoe2quiz-server)"
-        # Исправляю: в одном run нельзя подставить секрет в переменную для ssh - секреты маскируются.
-        # Лучше передать путь как есть; для default значения в GitHub Actions нет secrets.DEPLOY_PATH || '...'
-        # в одном выражении - нужно задать env для job и использовать env var.
 </think>
 Исправляю подстановку `DEPLOY_PATH` (в Actions нельзя подставлять `secrets` в default) и упрощаю шаг перезапуска:
 <｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
