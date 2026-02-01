@@ -11,6 +11,11 @@ export const tw = {
     yourPosition: '你的排名',
     back: '返回',
   },
+  profileEdit: {
+    title: '更改名字和文明',
+    save: '儲存',
+    back: '返回',
+  },
   training: {
     title: '訓練',
     selectType: '選擇題目類型',
@@ -98,6 +103,7 @@ export const tw = {
     connectionError: '無法連接到伺服器',
     enterName: '輸入你的名字',
     selectCountry: '選擇國家',
+    selectCivilization: '選擇文明',
     findGame: '尋找遊戲',
     searching: '正在尋找對手...',
     noPlayers: '目前沒有玩家在線。請稍後再試。',
@@ -108,6 +114,6 @@ export const tw = {
     rating: '等級分',
     ratingChange: '等級分變化',
     back: '返回',
-    changeProfile: '更改名字和國家',
+    changeProfile: '更改名字和文明',
   },
 } as const;

@@ -19,7 +19,7 @@ const CIV_ICON_SIZE = 40;
 const CIV_COLS = 4;
 
 type Props = {
-  onFindGame: (name: string, civId: string) => void;
+  onSave: (name: string, civId: string) => void;
   onBack: () => void;
 };
 
@@ -28,7 +28,7 @@ function getDefaultCivId(): string {
   return civIds.length > 0 ? civIds[0] : 'Britons';
 }
 
-export default function MultiplayerEntryScreen({ onFindGame, onBack }: Props) {
+export default function ProfileEditScreen({ onSave, onBack }: Props) {
   const { t } = useLanguage();
   const [name, setName] = useState('');
   const [civId, setCivId] = useState<string>(getDefaultCivId);
@@ -56,15 +56,15 @@ export default function MultiplayerEntryScreen({ onFindGame, onBack }: Props) {
   const gap = 8;
   const itemWidth = (width - 24 * 2 - gap * (CIV_COLS - 1)) / CIV_COLS;
 
-  const handleFindGame = () => {
+  const handleSave = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    onFindGame(trimmed, civId);
+    onSave(trimmed, civId);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('multiplayer.enterName')}</Text>
+      <Text style={styles.title}>{t('profileEdit.title')}</Text>
       <TextInput
         style={styles.input}
         value={name}
@@ -105,11 +105,11 @@ export default function MultiplayerEntryScreen({ onFindGame, onBack }: Props) {
         }}
       />
       <View style={styles.buttons}>
-        <SoundPressable style={[styles.button, styles.buttonPrimary]} onPress={handleFindGame}>
-          <Text style={styles.buttonText}>{t('multiplayer.findGame')}</Text>
+        <SoundPressable style={[styles.button, styles.buttonPrimary]} onPress={handleSave}>
+          <Text style={styles.buttonText}>{t('profileEdit.save')}</Text>
         </SoundPressable>
         <SoundPressable style={[styles.button, styles.buttonSecondary]} onPress={onBack}>
-          <Text style={styles.buttonTextSecondary}>{t('multiplayer.back')}</Text>
+          <Text style={styles.buttonTextSecondary}>{t('profileEdit.back')}</Text>
         </SoundPressable>
       </View>
     </View>

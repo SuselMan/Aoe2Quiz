@@ -1,0 +1,88 @@
+# Деплой бекенда на VPS при пуше в master.
+#
+# Секреты в GitHub: Settings → Secrets and variables → Actions.
+# Нужны: VPS_HOST, VPS_USER, VPS_PASSWORD
+# Опционально: DEPLOY_PATH (по умолчанию /var/www/aoe2quiz-server)
+#
+# На VPS: Node.js, npm, pm2 (npm i -g pm2), папка для деплоя (или создаётся автоматически).
+
+name: Deploy backend to VPS
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'server/**'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies and build
+        working-directory: server
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Create deploy directory on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "mkdir -p $DEPLOY_PATH"
+
+      - name: Copy files to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+        run: |
+          sshpass -p "$VPS_PASSWORD" rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            server/package.json \
+            server/package-lock.json \
+            server/dist \
+            "$VPS_USER@$VPS_HOST:$DEPLOY_PATH/"
+
+      - name: Install production deps and restart on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" << 'REMOTE'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}
+            # Подставляем путь из секрета через env на runner
+            true
+          REMOTE
+        # Подстановка переменной внутри heredoc не сработает - используем отдельную команду
+        run: |
+          DEPLOY_PATH="${{ secrets.DEPLOY_PATH || '/var/www/aoe2quiz-server' }}"
+          sshpass -p "${{ secrets.VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "cd $DEPLOY_PATH && npm ci --omit=dev && (pm2 restart aoe2quiz-server || pm2 start dist/index.js --name aoe2quiz-server)"
+        # Исправляю: в одном run нельзя подставить секрет в переменную для ssh - секреты маскируются.
+        # Лучше передать путь как есть; для default значения в GitHub Actions нет secrets.DEPLOY_PATH || '...'
+        # в одном выражении - нужно задать env для job и использовать env var.
+</think>
+Исправляю подстановку `DEPLOY_PATH` (в Actions нельзя подставлять `secrets` в default) и упрощаю шаг перезапуска:
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+StrReplace

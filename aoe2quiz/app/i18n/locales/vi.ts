@@ -11,6 +11,11 @@ export const vi = {
     yourPosition: 'Vị trí của bạn',
     back: 'Quay lại',
   },
+  profileEdit: {
+    title: 'Đổi tên và nền văn minh',
+    save: 'Lưu',
+    back: 'Quay lại',
+  },
   training: {
     title: 'Luyện tập',
     selectType: 'Chọn loại câu hỏi',
@@ -108,6 +113,6 @@ export const vi = {
     rating: 'Xếp hạng',
     ratingChange: 'Thay đổi xếp hạng',
     back: 'Quay lại',
-    changeProfile: 'Đổi tên và quốc gia',
+    changeProfile: 'Đổi tên và nền văn minh',
   },
 } as const;

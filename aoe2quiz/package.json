@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "start:remote": "cross-env EXPO_PUBLIC_MULTIPLAYER_SERVER_URL=https://5re6.l.time4vps.cloud expo start",
     "start:tunnel": "expo start --tunnel",
     "reset-project": "node ./scripts/reset-project.js",
     "fetch-aoe2-data": "node ./scripts/fetch-aoe2-data.js",
@@ -48,6 +49,7 @@
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "@babel/core": "^7.25.2",
     "@types/jest": "^29.5.12",
     "@types/react": "~19.1.10",

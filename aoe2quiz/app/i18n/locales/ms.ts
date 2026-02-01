@@ -11,6 +11,11 @@ export const ms = {
     yourPosition: 'Kedudukan anda',
     back: 'Kembali',
   },
+  profileEdit: {
+    title: 'Tukar nama dan tamadun',
+    save: 'Simpan',
+    back: 'Kembali',
+  },
   training: {
     title: 'Latihan',
     selectType: 'Pilih jenis soalan',
@@ -108,6 +113,6 @@ export const ms = {
     rating: 'Penilaian',
     ratingChange: 'Perubahan penilaian',
     back: 'Kembali',
-    changeProfile: 'Tukar nama dan negara',
+    changeProfile: 'Tukar nama dan tamadun',
   },
 } as const;

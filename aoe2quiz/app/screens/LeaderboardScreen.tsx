@@ -4,11 +4,7 @@ import SoundPressable from '@/app/components/ui/SoundPressable';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { fetchLeaderboard, type LeaderboardEntry } from '@/app/services/leaderboard';
 import { getOrCreateDeviceId } from '@/app/utils/deviceId';
-
-function getFlagUri(code: string): string {
-  const two = code.split('-')[0].slice(0, 2);
-  return `https://flagcdn.com/w80/${two}.png`;
-}
+import { getCivIconUri } from '@/app/utils/helpers';
 
 type Props = {
   onBack: () => void;
@@ -71,9 +67,9 @@ export default function LeaderboardScreen({ onBack }: Props) {
             >
               <Text style={styles.rank}>{entry.rank}</Text>
               <Image
-                source={{ uri: getFlagUri(entry.countryCode) }}
-                style={styles.flag}
-                resizeMode="cover"
+                source={{ uri: getCivIconUri(entry.civId) }}
+                style={styles.civIcon}
+                resizeMode="contain"
               />
               <Text style={styles.name} numberOfLines={1}>
                 {entry.name}
@@ -87,9 +83,9 @@ export default function LeaderboardScreen({ onBack }: Props) {
               <View style={[styles.row, styles.rowMe]}>
                 <Text style={styles.rank}>{me.rank}</Text>
                 <Image
-                  source={{ uri: getFlagUri(me.countryCode) }}
-                  style={styles.flag}
-                  resizeMode="cover"
+                  source={{ uri: getCivIconUri(me.civId) }}
+                  style={styles.civIcon}
+                  resizeMode="contain"
                 />
                 <Text style={styles.name} numberOfLines={1}>
                   {me.name}
@@ -159,10 +155,10 @@ const styles = StyleSheet.create({
     width: 32,
     color: '#1a1a1a',
   },
-  flag: {
+  civIcon: {
     width: 28,
-    height: 20,
-    borderRadius: 4,
+    height: 28,
+    borderRadius: 6,
     marginRight: 12,
   },
   name: {

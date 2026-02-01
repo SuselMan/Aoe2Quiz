@@ -175,3 +175,20 @@ export const getRandomCivId = (random: RandomFn = defaultRandom): string => {
     return civIds[Math.floor(random() * civIds.length)];
 };
 
+/** Localized civilization name by game civ id (e.g. "Britons"). */
+export const getCivNameById = (civId: string): string => {
+    const stringId = MainData.data.civ_names?.[civId];
+    if (!stringId) return civId;
+    return Strings.data[stringId] || civId;
+};
+
+/** URL of civilization icon (aoe2techtree). */
+export const getCivIconUri = (civId: string): string =>
+    `https://aoe2techtree.net/img/Civs/${civId.toLowerCase()}.png`;
+
+/** All civilization ids for selection, sorted by localized name. */
+export const getCivIdsSortedByName = (): string[] => {
+    const civIds = Object.keys(MainData.data.civ_names || {});
+    return [...civIds].sort((a, b) => getCivNameById(a).localeCompare(getCivNameById(b)));
+};
+

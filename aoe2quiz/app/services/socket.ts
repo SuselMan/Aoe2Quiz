@@ -3,8 +3,8 @@ import { MULTIPLAYER_SERVER_URL } from '@/app/config/api';
 
 export type MatchFoundPayload = {
   roomId: string;
-  opponent: { name: string; countryCode: string; rating: number };
-  you: { name: string; countryCode: string; rating: number };
+  opponent: { name: string; civId: string; rating: number };
+  you: { name: string; civId: string; rating: number };
 };
 
 export type QuestionPayload = {
@@ -19,7 +19,7 @@ export type GameOverPayload = {
   youWon: boolean;
   yourRatingChange: number;
   newRating: number;
-  opponent: { name: string; countryCode: string; rating: number };
+  opponent: { name: string; civId: string; rating: number };
 };
 
 let socket: Socket | null = null;
@@ -56,10 +56,10 @@ export function subscribeToConnection(cb: (connected: boolean) => void): () => v
 /**
  * Emit join_queue only when socket is connected, so the server always receives it.
  */
-export function joinQueue(deviceId: string, name: string, countryCode: string, onSearching?: () => void): void {
+export function joinQueue(deviceId: string, name: string, civId: string, onSearching?: () => void): void {
   const s = getSocket();
   const doJoin = () => {
-    s.emit('join_queue', { deviceId, name, countryCode });
+    s.emit('join_queue', { deviceId, name, civId });
     onSearching?.();
   };
   if (s.connected) {

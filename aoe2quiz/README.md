@@ -13,8 +13,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 2. Start the app
 
    ```bash
-    npx expo start
+   npm run start
    ```
+   (или `npx expo start`)
 
 In the output, you'll find options to open the app in a
 
@@ -24,6 +25,20 @@ In the output, you'll find options to open the app in a
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+
+## Backend URL и локальная сборка
+
+Мультиплеер и таблица лидеров ходят на бекенд по URL из конфига (`app/config/api.ts`):
+
+- **Режим разработки** (`npm run start`): по умолчанию `http://localhost:3000`. Запустите бекенд локально: `cd server && npm run dev`.
+- **Локальное приложение + удалённый бекенд** (например, 5re6): создайте в корне `aoe2quiz` файл `.env` (скопируйте из `.env.example`) и задайте:
+  ```env
+  EXPO_PUBLIC_MULTIPLAYER_SERVER_URL=https://5re6.l.time4vps.cloud
+  ```
+  Затем `npm run start` — приложение будет стучаться на этот хост. Для быстрого переключения можно использовать `npm run start:remote` (тот же URL через скрипт).
+- **Production-сборка** (APK/IPA или EAS): по умолчанию используется `https://5re6.l.time4vps.cloud`. Переопределить можно через переменную окружения при сборке: `EXPO_PUBLIC_MULTIPLAYER_SERVER_URL=...`.
+
+Итог: для локальной разработки с беком на 5re6 — `.env` с `EXPO_PUBLIC_MULTIPLAYER_SERVER_URL=https://5re6.l.time4vps.cloud` и `npm run start`.
 
 ## Get a fresh project
 

@@ -6,7 +6,7 @@ const TOP_LIMIT = 40;
 export type LeaderboardEntry = {
   rank: number;
   name: string;
-  countryCode: string;
+  civId: string;
   rating: number;
 };
 
@@ -24,7 +24,7 @@ export async function getLeaderboard(deviceId?: string | null): Promise<Leaderbo
   const top: LeaderboardEntry[] = topPlayers.map((p, i) => ({
     rank: i + 1,
     name: p.name,
-    countryCode: p.countryCode,
+    civId: (p as { civId?: string; countryCode?: string }).civId ?? (p as { countryCode?: string }).countryCode ?? 'Britons',
     rating: p.rating,
   }));
 
@@ -43,7 +43,7 @@ export async function getLeaderboard(deviceId?: string | null): Promise<Leaderbo
   const meEntry: LeaderboardEntry = {
     rank,
     name: me.name,
-    countryCode: me.countryCode,
+    civId: (me as { civId?: string; countryCode?: string }).civId ?? (me as { countryCode?: string }).countryCode ?? 'Britons',
     rating: me.rating,
   };
 

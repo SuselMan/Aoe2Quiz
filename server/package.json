@@ -8,6 +8,7 @@
     "dev": "ts-node-dev --respawn src/index.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "mongoose": "^8.8.3",
     "socket.io": "^4.8.1"
   },

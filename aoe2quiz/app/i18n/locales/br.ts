@@ -11,6 +11,11 @@ export const br = {
     yourPosition: 'Sua posição',
     back: 'Voltar',
   },
+  profileEdit: {
+    title: 'Alterar nome e civilização',
+    save: 'Salvar',
+    back: 'Voltar',
+  },
   training: {
     title: 'Treino',
     selectType: 'Selecione o tipo de pergunta',
@@ -108,6 +113,6 @@ export const br = {
     rating: 'Pontuação',
     ratingChange: 'Mudança de pontuação',
     back: 'Voltar',
-    changeProfile: 'Alterar nome e país',
+    changeProfile: 'Alterar nome e civilização',
   },
 } as const;

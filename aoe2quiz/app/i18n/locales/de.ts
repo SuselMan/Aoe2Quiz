@@ -11,6 +11,11 @@ export const de = {
     yourPosition: 'Deine Position',
     back: 'Zurück',
   },
+  profileEdit: {
+    title: 'Name und Zivilisation ändern',
+    save: 'Speichern',
+    back: 'Zurück',
+  },
   training: {
     title: 'Training',
     selectType: 'Fragentyp wählen',
@@ -98,6 +103,7 @@ export const de = {
     connectionError: 'Verbindung zum Server fehlgeschlagen',
     enterName: 'Name eingeben',
     selectCountry: 'Land wählen',
+    selectCivilization: 'Zivilisation wählen',
     findGame: 'Spiel suchen',
     searching: 'Gegner wird gesucht...',
     noPlayers: 'Keine Spieler online. Später erneut versuchen.',
@@ -108,6 +114,6 @@ export const de = {
     rating: 'Wertung',
     ratingChange: 'Wertungsänderung',
     back: 'Zurück',
-    changeProfile: 'Name und Land ändern',
+    changeProfile: 'Name und Zivilisation ändern',
   },
 } as const;

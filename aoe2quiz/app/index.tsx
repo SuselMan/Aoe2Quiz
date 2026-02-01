@@ -31,6 +31,7 @@ import MultiplayerResultScreen from '@/app/screens/MultiplayerResultScreen';
 import TrainingSelectScreen from '@/app/screens/TrainingSelectScreen';
 import TrainingQuiz from '@/app/components/TrainingQuiz';
 import LeaderboardScreen from '@/app/screens/LeaderboardScreen';
+import ProfileEditScreen from '@/app/screens/ProfileEditScreen';
 import type { QuestionTypeVariantValue } from '@/app/config/questionTypes';
 
 type Screen =
@@ -45,7 +46,8 @@ type Screen =
   | 'multiplayer_result'
   | 'training_select'
   | 'training_quiz'
-  | 'leaderboard';
+  | 'leaderboard'
+  | 'profile_edit';
 
 export default function Index() {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -164,9 +166,14 @@ export default function Index() {
                 }
                 storage
                   .getItem(STORAGE_KEYS.multiplayerName)
-                  .then((name) => storage.getItem(STORAGE_KEYS.multiplayerCountry).then((country) => ({ name, country })))
-                  .then(({ name, country }) => {
-                    if (name && country) {
+                  .then((name) =>
+                    Promise.all([
+                      storage.getItem(STORAGE_KEYS.multiplayerCiv),
+                      storage.getItem(STORAGE_KEYS.multiplayerCountry),
+                    ]).then(([civId, legacy]) => ({ name, civId: civId || legacy }))
+                  )
+                  .then(({ name, civId }) => {
+                    if (name && civId) {
                       if (!getSocket().connected) {
                         Alert.alert('', t('multiplayer.connectionError'));
                         return;
@@ -174,7 +181,7 @@ export default function Index() {
                       setSearchTimedOut(false);
                       setMatchPayload(null);
                       getOrCreateDeviceId().then((deviceId) => {
-                        joinQueue(deviceId, name, country, () => setScreen('multiplayer_searching'));
+                        joinQueue(deviceId, name, civId, () => setScreen('multiplayer_searching'));
                       });
                     } else {
                       setScreen('multiplayer_entry');
@@ -224,13 +231,13 @@ export default function Index() {
         )}
         {screen === 'multiplayer_entry' && (
           <MultiplayerEntryScreen
-            onFindGame={(name, countryCode) => {
+            onFindGame={(name, civId) => {
               storage.setItem(STORAGE_KEYS.multiplayerName, name);
-              storage.setItem(STORAGE_KEYS.multiplayerCountry, countryCode);
+              storage.setItem(STORAGE_KEYS.multiplayerCiv, civId);
               setSearchTimedOut(false);
               setMatchPayload(null);
               getOrCreateDeviceId().then((deviceId) => {
-                joinQueue(deviceId, name, countryCode, () => setScreen('multiplayer_searching'));
+                joinQueue(deviceId, name, civId, () => setScreen('multiplayer_searching'));
               });
             }}
             onBack={() => setScreen('menu')}
@@ -298,6 +305,16 @@ export default function Index() {
         )}
         {screen === 'leaderboard' && (
           <LeaderboardScreen onBack={() => setScreen('menu')} />
+        )}
+        {screen === 'profile_edit' && (
+          <ProfileEditScreen
+            onSave={(name, civId) => {
+              storage.setItem(STORAGE_KEYS.multiplayerName, name);
+              storage.setItem(STORAGE_KEYS.multiplayerCiv, civId);
+              setScreen('menu');
+            }}
+            onBack={() => setScreen('menu')}
+          />
         )}
       </View>
       <StatusBar style="auto" />

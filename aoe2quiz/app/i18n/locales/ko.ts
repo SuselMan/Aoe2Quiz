@@ -11,6 +11,11 @@ export const ko = {
     yourPosition: '내 순위',
     back: '뒤로',
   },
+  profileEdit: {
+    title: '이름과 문명 변경',
+    save: '저장',
+    back: '뒤로',
+  },
   training: {
     title: '연습',
     selectType: '문제 유형 선택',
@@ -108,6 +113,6 @@ export const ko = {
     rating: '레이팅',
     ratingChange: '레이팅 변동',
     back: '뒤로',
-    changeProfile: '이름과 국가 변경',
+    changeProfile: '이름과 문명 변경',
   },
 } as const;

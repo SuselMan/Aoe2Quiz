@@ -11,7 +11,7 @@ interface RoomPlayer {
   socketId: string;
   deviceId: string;
   name: string;
-  countryCode: string;
+  civId: string;
   rating: number;
 }
 
@@ -192,14 +192,14 @@ export function createRoom(io: Server, player1: QueuedPlayer, player2: QueuedPla
       socketId: player1.socketId,
       deviceId: player1.deviceId,
       name: player1.name,
-      countryCode: player1.countryCode,
+      civId: player1.civId,
       rating: player1.rating,
     },
     playerB: {
       socketId: player2.socketId,
       deviceId: player2.deviceId,
       name: player2.name,
-      countryCode: player2.countryCode,
+      civId: player2.civId,
       rating: player2.rating,
     },
     questionIndex: 0,
@@ -240,13 +240,13 @@ function doOnMatch(io: Server, p1: QueuedPlayer, p2: QueuedPlayer): void {
   socket2.join(roomId);
   const payload1 = {
     roomId,
-    opponent: { name: room.playerB.name, countryCode: room.playerB.countryCode, rating: room.playerB.rating },
-    you: { name: room.playerA.name, countryCode: room.playerA.countryCode, rating: room.playerA.rating },
+    opponent: { name: room.playerB.name, civId: room.playerB.civId, rating: room.playerB.rating },
+    you: { name: room.playerA.name, civId: room.playerA.civId, rating: room.playerA.rating },
   };
   const payload2 = {
     roomId,
-    opponent: { name: room.playerA.name, countryCode: room.playerA.countryCode, rating: room.playerA.rating },
-    you: { name: room.playerB.name, countryCode: room.playerB.countryCode, rating: room.playerB.rating },
+    opponent: { name: room.playerA.name, civId: room.playerA.civId, rating: room.playerA.rating },
+    you: { name: room.playerB.name, civId: room.playerB.civId, rating: room.playerB.rating },
   };
   socket1.emit('match_found', payload1);
   socket2.emit('match_found', payload2);
@@ -256,26 +256,26 @@ function doOnMatch(io: Server, p1: QueuedPlayer, p2: QueuedPlayer): void {
 export function registerSocketHandlers(io: Server): void {
   io.on('connection', (socket: Socket) => {
     console.log('[match] connection', socket.id);
-    socket.on('join_queue', (data: { deviceId: string; name: string; countryCode: string }) => {
-      const { deviceId, name, countryCode } = data;
+    socket.on('join_queue', (data: { deviceId: string; name: string; civId: string }) => {
+      const { deviceId, name, civId } = data;
       console.log('[match] join_queue', socket.id, name);
-      if (!deviceId || !name || !countryCode) {
-        socket.emit('error', { message: 'deviceId, name, countryCode required' });
+      if (!deviceId || !name || !civId) {
+        socket.emit('error', { message: 'deviceId, name, civId required' });
         return;
       }
-      // Fetch rating from DB (and update name/country), then add to queue with actual rating
+      // Fetch rating from DB (and update name/civId), then add to queue with actual rating
       Player.findOne({ deviceId })
         .then((player) => {
           const rating = player?.rating ?? config.INITIAL_ELO;
           if (!player) {
-            Player.create({ deviceId, name, countryCode, rating: config.INITIAL_ELO }).catch(() => {});
+            Player.create({ deviceId, name, civId, rating: config.INITIAL_ELO }).catch(() => {});
           } else {
-            Player.updateOne({ deviceId }, { name, countryCode }).catch(() => {});
+            Player.updateOne({ deviceId }, { name, civId }).catch(() => {});
           }
-          joinQueue(io, socket, deviceId, name, countryCode, rating, doOnMatch.bind(null, io));
+          joinQueue(io, socket, deviceId, name, civId, rating, doOnMatch.bind(null, io));
         })
         .catch(() => {
-          joinQueue(io, socket, deviceId, name, countryCode, config.INITIAL_ELO, doOnMatch.bind(null, io));
+          joinQueue(io, socket, deviceId, name, civId, config.INITIAL_ELO, doOnMatch.bind(null, io));
         });
     });
 

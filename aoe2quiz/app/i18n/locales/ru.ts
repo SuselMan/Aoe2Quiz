@@ -11,6 +11,11 @@ export const ru = {
     yourPosition: 'Ваша позиция',
     back: 'Назад',
   },
+  profileEdit: {
+    title: 'Сменить имя и цивилизацию',
+    save: 'Сохранить',
+    back: 'Назад',
+  },
   training: {
     title: 'Тренировка',
     selectType: 'Выберите тип вопросов',
@@ -98,6 +103,7 @@ export const ru = {
     connectionError: 'Не удалось установить соединение с сервером',
     enterName: 'Введите имя',
     selectCountry: 'Выберите страну',
+    selectCivilization: 'Выберите цивилизацию',
     findGame: 'Найти игру',
     searching: 'Ищем противника...',
     noPlayers: 'Сейчас нет игроков. Зайдите позже.',
@@ -108,6 +114,6 @@ export const ru = {
     rating: 'Рейтинг',
     ratingChange: 'Изменение рейтинга',
     back: 'Назад',
-    changeProfile: 'Сменить имя и страну',
+    changeProfile: 'Сменить имя и цивилизацию',
   },
 } as const;

@@ -11,6 +11,11 @@ export const hi = {
     yourPosition: 'आपकी रैंक',
     back: 'वापस',
   },
+  profileEdit: {
+    title: 'नाम और सभ्यता बदलें',
+    save: 'सहेजें',
+    back: 'वापस',
+  },
   training: {
     title: 'अभ्यास',
     selectType: 'प्रश्न प्रकार चुनें',
@@ -108,6 +113,6 @@ export const hi = {
     rating: 'रेटिंग',
     ratingChange: 'रेटिंग परिवर्तन',
     back: 'वापस',
-    changeProfile: 'नाम और देश बदलें',
+    changeProfile: 'नाम और सभ्यता बदलें',
   },
 } as const;

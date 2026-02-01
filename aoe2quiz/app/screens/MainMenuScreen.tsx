@@ -4,51 +4,53 @@ import SoundPressable from '@/app/components/ui/SoundPressable';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { STORAGE_KEYS } from '@/app/config/storageKeys';
 import storage from '@/app/utils/storage';
+import { getCivIconUri } from '@/app/utils/helpers';
 
-type Screen = 'menu' | 'settings' | 'level_select' | 'quiz' | 'result' | 'multiplayer' | 'training_select' | 'training_quiz' | 'leaderboard';
+type Screen = 'menu' | 'settings' | 'level_select' | 'quiz' | 'result' | 'multiplayer' | 'training_select' | 'training_quiz' | 'leaderboard' | 'profile_edit';
 
 type Props = {
   onNavigate: (screen: Screen) => void;
   multiplayerDisabled?: boolean;
 };
 
-function getFlagUri(code: string): string {
-  const two = code.split('-')[0].slice(0, 2);
-  return `https://flagcdn.com/w80/${two}.png`;
-}
-
 export default function MainMenuScreen({ onNavigate, multiplayerDisabled }: Props) {
   const { t } = useLanguage();
   const [profile, setProfile] = useState<{
     name: string | null;
-    countryCode: string | null;
+    civId: string | null;
     rating: number | null;
-  }>({ name: null, countryCode: null, rating: null });
+  }>({ name: null, civId: null, rating: null });
 
   useEffect(() => {
     Promise.all([
       storage.getItem(STORAGE_KEYS.multiplayerName),
+      storage.getItem(STORAGE_KEYS.multiplayerCiv),
       storage.getItem(STORAGE_KEYS.multiplayerCountry),
       storage.getItem(STORAGE_KEYS.multiplayerRating),
-    ]).then(([name, countryCode, ratingStr]) => {
+    ]).then(([name, civId, legacyCountry, ratingStr]) => {
+      const resolvedCiv = civId || legacyCountry;
       setProfile({
         name: name ?? null,
-        countryCode: countryCode ?? null,
+        civId: resolvedCiv ?? null,
         rating: ratingStr != null && ratingStr !== '' ? parseInt(ratingStr, 10) : null,
       });
     });
   }, []);
 
-  const showProfile = profile.name && profile.countryCode;
+  const showProfile = profile.name && profile.civId;
 
   return (
     <View style={styles.container}>
       {showProfile && (
-        <View style={styles.profileBadge}>
+        <SoundPressable
+          style={styles.profileBadge}
+          onPress={() => onNavigate('profile_edit')}
+          accessibilityLabel={t('multiplayer.changeProfile')}
+        >
           <Image
-            source={{ uri: getFlagUri(profile.countryCode!) }}
-            style={styles.profileFlag}
-            resizeMode="cover"
+            source={{ uri: getCivIconUri(profile.civId!) }}
+            style={styles.profileCivIcon}
+            resizeMode="contain"
           />
           <Text style={styles.profileName} numberOfLines={1}>
             {profile.name}
@@ -56,7 +58,7 @@ export default function MainMenuScreen({ onNavigate, multiplayerDisabled }: Prop
           {profile.rating != null && !Number.isNaN(profile.rating) && (
             <Text style={styles.profileRating}>{profile.rating}</Text>
           )}
-        </View>
+        </SoundPressable>
       )}
       <SoundPressable
         style={styles.settingsButton}
@@ -121,10 +123,10 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
   },
-  profileFlag: {
-    width: 24,
-    height: 18,
-    borderRadius: 4,
+  profileCivIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   profileName: {
     fontFamily: 'Balthazar',

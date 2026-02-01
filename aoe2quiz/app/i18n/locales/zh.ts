@@ -11,6 +11,11 @@ export const zh = {
     yourPosition: '你的排名',
     back: '返回',
   },
+  profileEdit: {
+    title: '更改名字和文明',
+    save: '保存',
+    back: '返回',
+  },
   training: {
     title: '训练',
     selectType: '选择题目类型',
@@ -98,6 +103,7 @@ export const zh = {
     connectionError: '无法连接到服务器',
     enterName: '输入你的名字',
     selectCountry: '选择国家',
+    selectCivilization: '选择文明',
     findGame: '寻找游戏',
     searching: '正在寻找对手...',
     noPlayers: '当前没有玩家在线。请稍后再试。',
@@ -108,6 +114,6 @@ export const zh = {
     rating: '等级分',
     ratingChange: '等级分变化',
     back: '返回',
-    changeProfile: '更改名字和国家',
+    changeProfile: '更改名字和文明',
   },
 } as const;

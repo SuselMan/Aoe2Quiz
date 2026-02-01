@@ -11,6 +11,11 @@ export const pl = {
     yourPosition: 'Twoja pozycja',
     back: 'Wstecz',
   },
+  profileEdit: {
+    title: 'Zmień imię i cywilizację',
+    save: 'Zapisz',
+    back: 'Wstecz',
+  },
   training: {
     title: 'Trening',
     selectType: 'Wybierz typ pytań',
@@ -108,6 +113,6 @@ export const pl = {
     rating: 'Ranking',
     ratingChange: 'Zmiana rankingu',
     back: 'Wstecz',
-    changeProfile: 'Zmień imię i kraj',
+    changeProfile: 'Zmień imię i cywilizację',
   },
 } as const;

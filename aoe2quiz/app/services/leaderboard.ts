@@ -3,7 +3,7 @@ import { MULTIPLAYER_SERVER_URL } from '@/app/config/api';
 export type LeaderboardEntry = {
   rank: number;
   name: string;
-  countryCode: string;
+  civId: string;
   rating: number;
 };
 

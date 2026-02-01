@@ -6,7 +6,7 @@ export type QueuedPlayer = {
   socketId: string;
   deviceId: string;
   name: string;
-  countryCode: string;
+  civId: string;
   rating: number;
   joinedAt: number;
 };
@@ -45,7 +45,7 @@ export function joinQueue(
   socket: Socket,
   deviceId: string,
   name: string,
-  countryCode: string,
+  civId: string,
   rating: number,
   onMatch: (player1: QueuedPlayer, player2: QueuedPlayer) => void
 ): void {
@@ -53,7 +53,7 @@ export function joinQueue(
     socketId: socket.id,
     deviceId,
     name,
-    countryCode,
+    civId,
     rating,
     joinedAt: Date.now(),
   };

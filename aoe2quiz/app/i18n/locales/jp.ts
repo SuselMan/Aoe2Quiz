@@ -11,6 +11,11 @@ export const jp = {
     yourPosition: 'あなたの順位',
     back: '戻る',
   },
+  profileEdit: {
+    title: '名前と文明を変更',
+    save: '保存',
+    back: '戻る',
+  },
   training: {
     title: '練習',
     selectType: '問題タイプを選択',
@@ -98,6 +103,7 @@ export const jp = {
     connectionError: 'サーバーに接続できません',
     enterName: '名前を入力',
     selectCountry: '国を選択',
+    selectCivilization: '文明を選択',
     findGame: '対戦を探す',
     searching: '対戦相手を検索中...',
     noPlayers: 'オンラインのプレイヤーがいません。しばらくしてから再試行してください。',
@@ -108,6 +114,6 @@ export const jp = {
     rating: 'レーティング',
     ratingChange: 'レーティング変動',
     back: '戻る',
-    changeProfile: '名前と国を変更',
+    changeProfile: '名前と文明を変更',
   },
 } as const;

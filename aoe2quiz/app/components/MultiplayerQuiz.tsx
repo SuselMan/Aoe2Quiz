@@ -28,18 +28,14 @@ import {
   type QuestionPayload,
   type GameOverPayload,
 } from '@/app/services/socket';
+import { getCivIconUri } from '@/app/utils/helpers';
 
 const QUESTION_TIME_SEC = 30;
 
-function getFlagUri(code: string): string {
-  const two = code.split('-')[0].slice(0, 2);
-  return `https://flagcdn.com/w80/${two}.png`;
-}
-
 type Props = {
   roomId: string;
-  opponent: { name: string; countryCode: string; rating: number };
-  you: { name: string; countryCode: string; rating: number };
+  opponent: { name: string; civId: string; rating: number };
+  you: { name: string; civId: string; rating: number };
   onGameOver: (payload: GameOverPayload) => void;
   onMenu: () => void;
 };
@@ -160,9 +156,9 @@ export default function MultiplayerQuiz({ roomId, opponent, you, onGameOver, onM
         </SoundPressable>
         <View style={styles.opponentRow}>
           <Image
-            source={{ uri: getFlagUri(opponent.countryCode) }}
-            style={styles.opponentFlag}
-            resizeMode="cover"
+            source={{ uri: getCivIconUri(opponent.civId) }}
+            style={styles.opponentCivIcon}
+            resizeMode="contain"
           />
           <Text style={styles.opponentName} numberOfLines={1}>
             {opponent.name}
@@ -298,10 +294,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: '60%',
   },
-  opponentFlag: {
+  opponentCivIcon: {
     width: 28,
-    height: 20,
-    borderRadius: 4,
+    height: 28,
+    borderRadius: 6,
     marginRight: 8,
   },
   opponentName: {

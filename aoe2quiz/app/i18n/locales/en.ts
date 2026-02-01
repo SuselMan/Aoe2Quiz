@@ -11,6 +11,11 @@ export const en = {
     yourPosition: 'Your position',
     back: 'Back',
   },
+  profileEdit: {
+    title: 'Change name and civilization',
+    save: 'Save',
+    back: 'Back',
+  },
   training: {
     title: 'Training',
     selectType: 'Select question type',
@@ -98,6 +103,7 @@ export const en = {
     connectionError: 'Failed to connect to the server',
     enterName: 'Enter your name',
     selectCountry: 'Select country',
+    selectCivilization: 'Select civilization',
     findGame: 'Find game',
     searching: 'Searching for opponent...',
     noPlayers: 'No players online right now. Try again later.',
@@ -108,6 +114,6 @@ export const en = {
     rating: 'Rating',
     ratingChange: 'Rating change',
     back: 'Back',
-    changeProfile: 'Change name and country',
+    changeProfile: 'Change name and civilization',
   },
 } as const;

@@ -11,6 +11,11 @@ export const tr = {
     yourPosition: 'Sıralamanız',
     back: 'Geri',
   },
+  profileEdit: {
+    title: 'İsim ve uygarlık değiştir',
+    save: 'Kaydet',
+    back: 'Geri',
+  },
   training: {
     title: 'Antrenman',
     selectType: 'Soru türü seçin',
@@ -108,6 +113,6 @@ export const tr = {
     rating: 'Puan',
     ratingChange: 'Puan değişimi',
     back: 'Geri',
-    changeProfile: 'İsim ve ülke değiştir',
+    changeProfile: 'İsim ve uygarlık değiştir',
   },
 } as const;
