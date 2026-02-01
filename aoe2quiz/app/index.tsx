@@ -32,11 +32,13 @@ import TrainingSelectScreen from '@/app/screens/TrainingSelectScreen';
 import TrainingQuiz from '@/app/components/TrainingQuiz';
 import LeaderboardScreen from '@/app/screens/LeaderboardScreen';
 import ProfileEditScreen from '@/app/screens/ProfileEditScreen';
+import SupportScreen from '@/app/screens/SupportScreen';
 import type { QuestionTypeVariantValue } from '@/app/config/questionTypes';
 
 type Screen =
   | 'menu'
   | 'settings'
+  | 'support'
   | 'level_select'
   | 'quiz'
   | 'result'
@@ -192,7 +194,13 @@ export default function Index() {
           />
         )}
         {screen === 'settings' && (
-          <SettingsScreen onBack={() => setScreen('menu')} />
+          <SettingsScreen
+            onBack={() => setScreen('menu')}
+            onSupportProject={() => setScreen('support')}
+          />
+        )}
+        {screen === 'support' && (
+          <SupportScreen onBack={() => setScreen('settings')} />
         )}
         {screen === 'level_select' && (
           <LevelSelectScreen

@@ -1,5 +1,5 @@
-import React, { createElement, useState } from 'react';
-import { View, Text, StyleSheet, Platform, Modal, ScrollView, Switch } from 'react-native';
+import React, { createElement, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Platform, Modal, ScrollView, Switch, BackHandler } from 'react-native';
 import SoundPressable from '@/app/components/ui/SoundPressable';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useMusic } from '@/app/context/MusicContext';
@@ -7,9 +7,10 @@ import { LOCALES, type Locale } from '@/app/i18n';
 
 type Props = {
   onBack: () => void;
+  onSupportProject?: () => void;
 };
 
-export default function SettingsScreen({ onBack }: Props) {
+export default function SettingsScreen({ onBack, onSupportProject }: Props) {
   const { t, locale, setLocale } = useLanguage();
   const { musicEnabled, setMusicEnabled } = useMusic();
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -20,6 +21,14 @@ export default function SettingsScreen({ onBack }: Props) {
     setLocale(newLocale);
     setPickerVisible(false);
   };
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onBack();
+      return true;
+    });
+    return () => sub.remove();
+  }, [onBack]);
 
   return (
     <View style={styles.container}>
@@ -101,6 +110,12 @@ export default function SettingsScreen({ onBack }: Props) {
           thumbColor="#fff"
         />
       </View>
+
+      {onSupportProject && (
+        <SoundPressable style={styles.supportButton} onPress={onSupportProject}>
+          <Text style={styles.supportButtonText}>{t('settings.supportProject')}</Text>
+        </SoundPressable>
+      )}
 
       <SoundPressable style={styles.backButton} onPress={onBack}>
         <Text style={styles.backButtonText}>{t('settings.back')}</Text>
@@ -196,6 +211,19 @@ const styles = StyleSheet.create({
   modalOptionTextActive: {
     color: '#2e5560',
     fontWeight: 'bold',
+  },
+  supportButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    backgroundColor: '#3d6b78',
+    marginBottom: 24,
+  },
+  supportButtonText: {
+    fontFamily: 'Balthazar',
+    fontSize: 18,
+    color: '#fff',
   },
   backButton: {
     alignSelf: 'flex-start',
