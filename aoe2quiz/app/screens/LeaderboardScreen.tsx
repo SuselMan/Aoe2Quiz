@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, BackHandler, useWindowDimensions } from 'react-native';
 import SoundPressable from '@/app/components/ui/SoundPressable';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { fetchLeaderboard, type LeaderboardEntry } from '@/app/services/leaderboard';
@@ -10,8 +10,12 @@ type Props = {
   onBack: () => void;
 };
 
+const HORIZONTAL_PADDING = 24;
+
 export default function LeaderboardScreen({ onBack }: Props) {
   const { t } = useLanguage();
+  const { width: windowWidth } = useWindowDimensions();
+  const contentWidth = windowWidth - HORIZONTAL_PADDING * 2;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [top, setTop] = useState<LeaderboardEntry[]>([]);
@@ -48,7 +52,7 @@ export default function LeaderboardScreen({ onBack }: Props) {
     me != null && entry.rank === me.rank && entry.name === me.name;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width: windowWidth }]}>
       <Text style={styles.title}>{t('leaderboard.title')}</Text>
       {loading ? (
         <View style={styles.centered}>
@@ -59,11 +63,11 @@ export default function LeaderboardScreen({ onBack }: Props) {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : (
-        <ScrollView style={styles.list} contentContainerStyle={styles.listContent}>
+        <ScrollView style={styles.list} contentContainerStyle={[styles.listContent, { width: contentWidth }]}>
           {top.map((entry) => (
             <View
               key={`${entry.rank}-${entry.name}`}
-              style={[styles.row, isMe(entry) && styles.rowMe]}
+              style={[styles.row, isMe(entry) && styles.rowMe, { width: contentWidth }]}
             >
               <Text style={styles.rank}>{entry.rank}</Text>
               <Image
@@ -78,9 +82,9 @@ export default function LeaderboardScreen({ onBack }: Props) {
             </View>
           ))}
           {me != null && me.rank > 40 && (
-            <View style={styles.meBlock}>
+            <View style={[styles.meBlock, { width: contentWidth }]}>
               <Text style={styles.meLabel}>{t('leaderboard.yourPosition')}</Text>
-              <View style={[styles.row, styles.rowMe]}>
+              <View style={[styles.row, styles.rowMe, { width: contentWidth }]}>
                 <Text style={styles.rank}>{me.rank}</Text>
                 <Image
                   source={{ uri: getCivIconUri(me.civId) }}
@@ -96,9 +100,11 @@ export default function LeaderboardScreen({ onBack }: Props) {
           )}
         </ScrollView>
       )}
-      <SoundPressable style={styles.backButton} onPress={onBack}>
-        <Text style={styles.backButtonText}>{t('leaderboard.back')}</Text>
-      </SoundPressable>
+      <View style={styles.backButtonWrap}>
+        <SoundPressable style={[styles.backButton, { maxWidth: contentWidth }]} onPress={onBack}>
+          <Text style={styles.backButtonText} numberOfLines={1}>{t('leaderboard.back')}</Text>
+        </SoundPressable>
+      </View>
     </View>
   );
 }
@@ -131,7 +137,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 24,
-    width: '100%',
     alignSelf: 'stretch',
   },
   row: {
@@ -142,7 +147,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     borderRadius: 8,
     backgroundColor: '#f0f0f0',
-    width: '100%',
   },
   rowMe: {
     backgroundColor: 'rgba(46, 85, 96, 0.2)',
@@ -187,13 +191,16 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 8,
   },
+  backButtonWrap: {
+    width: '100%',
+    marginTop: 16,
+  },
   backButton: {
     alignSelf: 'flex-start',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
     backgroundColor: '#2e5560',
-    marginTop: 16,
   },
   backButtonText: {
     fontFamily: 'Balthazar',

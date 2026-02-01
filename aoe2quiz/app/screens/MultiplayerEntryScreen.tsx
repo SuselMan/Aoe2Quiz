@@ -79,8 +79,10 @@ export default function MultiplayerEntryScreen({ onFindGame, onBack }: Props) {
         data={civIds}
         keyExtractor={(item) => item}
         numColumns={CIV_COLS}
+        style={styles.civListScroll}
         contentContainerStyle={[styles.civList, { gap }]}
         columnWrapperStyle={{ gap }}
+        showsVerticalScrollIndicator={true}
         renderItem={({ item }) => {
           const selected = civId === item;
           return (
@@ -145,9 +147,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: '#1a1a1a',
   },
+  civListScroll: {
+    flex: 1,
+    minHeight: 200,
+  },
   civList: {
     paddingBottom: 20,
-    maxHeight: 320,
   },
   civItem: {
     borderRadius: 8,
