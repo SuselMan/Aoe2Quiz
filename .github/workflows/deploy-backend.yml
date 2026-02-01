@@ -71,8 +71,7 @@ jobs:
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           DEPLOY_PATH="${DEPLOY_PATH:-/var/www/aoe2quiz-server}"
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
-            "cd $DEPLOY_PATH && npm ci --omit=dev && (pm2 restart aoe2quiz-server || pm2 start dist/index.js --name aoe2quiz-server)"
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "cd $DEPLOY_PATH && npm ci --omit=dev && (pm2 restart aoe2quiz-server || pm2 start dist/index.js --name aoe2quiz-server)"
 </think>
 Исправляю подстановку `DEPLOY_PATH` (в Actions нельзя подставлять `secrets` в default) и упрощаю шаг перезапуска:
 <｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
