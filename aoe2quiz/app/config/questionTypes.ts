@@ -26,6 +26,21 @@ export const QuestionTypeVariant = {
   unitStats_unitToStat: 'unitStats_unitToStat',
   // 6) Tech tree branch (keep existing)
   treeBranch_branchToCiv: 'treeBranch_branchToCiv',
+  // 7) Tech research time
+  techTime_techToTime: 'techTime_techToTime',
+  // 8) Civ unique tech (reverse)
+  civUniqueTech_civToTech: 'civUniqueTech_civToTech',
+  // 9) Unit upgrade cost & time
+  upgradePrice_upgradeToPrice: 'upgradePrice_upgradeToPrice',
+  upgradePrice_priceToUpgrade: 'upgradePrice_priceToUpgrade',
+  upgradeTime_upgradeToTime: 'upgradeTime_upgradeToTime',
+  upgradeTime_timeToUpgrade: 'upgradeTime_timeToUpgrade',
+  // 10) Building stats
+  buildingStats_buildingToStat: 'buildingStats_buildingToStat',
+  buildingStats_statToBuilding: 'buildingStats_statToBuilding',
+  // 11) Building/unit description
+  buildingDesc_descToBuilding: 'buildingDesc_descToBuilding',
+  unitDesc_descToUnit: 'unitDesc_descToUnit',
 } as const;
 
 export type QuestionTypeVariantKey = keyof typeof QuestionTypeVariant;

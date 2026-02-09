@@ -12,6 +12,7 @@ type AnswerButtonProps = {
 };
 
 const AnswerButton: React.FC<AnswerButtonProps> = ({ imageUrl, text, onPress, reveal, isCorrect, style }) => {
+    console.log('imageUrl', imageUrl);
     return (
         <CommonButton isCorrect={isCorrect} onPress={onPress} reveal={reveal} style={style}>
             <View style={styles.container}>
