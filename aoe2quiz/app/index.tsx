@@ -2,13 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, Image, ImageBackground, useWindowDimensions, Platform, Alert } from 'react-native';
 import Strings from '@/app/strings';
-import { useLanguage } from '@/app/context/LanguageContext';
-import { getDifficultyLevelById } from '@/app/config/difficulty';
-import { STORAGE_KEYS } from '@/app/config/storageKeys';
-import storage from '@/app/utils/storage';
-import { clearCivParsedCache } from '@/app/utils/parseCivHelpTexts';
-import { getOrCreateDeviceId } from '@/app/utils/deviceId';
-import { playVictorySound, playGameStartedSound } from '@/app/utils/sounds';
+import { useLanguage } from '@/src/context/LanguageContext';
+import { getDifficultyLevelById } from '@/src/config/difficulty';
+import { STORAGE_KEYS } from '@/src/config/storageKeys';
+import storage from '@/src/utils/storage';
+import { clearCivParsedCache } from '@/src/utils/parseCivHelpTexts';
+import { getOrCreateDeviceId } from '@/src/utils/deviceId';
+import { playVictorySound, playGameStartedSound } from '@/src/utils/sounds';
 import {
   getSocket,
   joinQueue,
@@ -18,22 +18,22 @@ import {
   subscribeToConnection,
   type MatchFoundPayload,
   type GameOverPayload,
-} from '@/app/services/socket';
-import MainMenuScreen from '@/app/screens/MainMenuScreen';
-import SettingsScreen from '@/app/screens/SettingsScreen';
-import LevelSelectScreen from '@/app/screens/LevelSelectScreen';
-import ResultScreen from '@/app/screens/ResultScreen';
-import CampaignQuiz from '@/app/components/CampaignQuiz';
-import MultiplayerEntryScreen from '@/app/screens/MultiplayerEntryScreen';
-import SearchingScreen from '@/app/screens/SearchingScreen';
-import MultiplayerQuiz from '@/app/components/MultiplayerQuiz';
-import MultiplayerResultScreen from '@/app/screens/MultiplayerResultScreen';
-import TrainingSelectScreen from '@/app/screens/TrainingSelectScreen';
-import TrainingQuiz from '@/app/components/TrainingQuiz';
-import LeaderboardScreen from '@/app/screens/LeaderboardScreen';
-import ProfileEditScreen from '@/app/screens/ProfileEditScreen';
-import SupportScreen from '@/app/screens/SupportScreen';
-import type { QuestionTypeVariantValue } from '@/app/config/questionTypes';
+} from '@/src/services/socket';
+import MainMenuScreen from '@/src/screens/MainMenuScreen';
+import SettingsScreen from '@/src/screens/SettingsScreen';
+import LevelSelectScreen from '@/src/screens/LevelSelectScreen';
+import ResultScreen from '@/src/screens/ResultScreen';
+import CampaignQuiz from '@/src/components/CampaignQuiz';
+import MultiplayerEntryScreen from '@/src/screens/MultiplayerEntryScreen';
+import SearchingScreen from '@/src/screens/SearchingScreen';
+import MultiplayerQuiz from '@/src/components/MultiplayerQuiz';
+import MultiplayerResultScreen from '@/src/screens/MultiplayerResultScreen';
+import TrainingSelectScreen from '@/src/screens/TrainingSelectScreen';
+import TrainingQuiz from '@/src/components/TrainingQuiz';
+import LeaderboardScreen from '@/src/screens/LeaderboardScreen';
+import ProfileEditScreen from '@/src/screens/ProfileEditScreen';
+import SupportScreen from '@/src/screens/SupportScreen';
+import type { QuestionTypeVariantValue } from '@/src/config/questionTypes';
 
 type Screen =
   | 'menu'
@@ -116,7 +116,7 @@ export default function Index() {
 
   const backgroundSource =
     screen === 'menu' || screen === 'level_select' || screen === 'settings' || screen === 'multiplayer_entry' || screen === 'multiplayer_searching' || screen === 'multiplayer_result' || screen === 'training_select' || screen === 'leaderboard'
-      ? require('../assets/images/bg_main2.png')
+      ? require('../assets/images/bg_main3.png')
       : require('../assets/images/bg.png');
 
   const backgroundStyle =

@@ -1,4 +1,4 @@
-import { GameData } from '@/app/models/dataModel';
+import { GameData } from '@/src/models/dataModel';
 
 declare global {
   interface GlobalType {

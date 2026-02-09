@@ -1,4 +1,4 @@
-import type { GameData } from '@/app/models/dataModel';
+import type { GameData } from '@/src/models/dataModel';
 
 const DATA_URL = 'https://aoe2techtree.net/data/data.json';
 

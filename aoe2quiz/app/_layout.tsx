@@ -5,8 +5,8 @@ import { View, useWindowDimensions, StyleSheet, Text, ActivityIndicator } from '
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import MainData from '@/app/gameData';
-import { LanguageProvider } from '@/app/context/LanguageContext';
-import { MusicProvider } from '@/app/context/MusicContext';
+import { LanguageProvider } from '@/src/context/LanguageContext';
+import { MusicProvider } from '@/src/context/MusicContext';
 import { Slot } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
