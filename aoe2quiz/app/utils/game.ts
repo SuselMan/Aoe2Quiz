@@ -252,7 +252,11 @@ const getPriceQ = (type: 'unitPrice' | 'buildingPrice' | 'techPrice', excludeNav
     if ((unitObj.Cost.Wood || 0) + (unitObj.Cost.Stone || 0) + (unitObj.Cost.Food || 0) + (unitObj.Cost.Gold || 0) === 0) {
         return getPriceQ(type, excludeNaval, excludeUniqueTech, levelId, r, t);
     }
-    const fakePrice = getSimilarPrice(unitObj.Cost, r);
+    let fakePrice = getSimilarPrice(unitObj.Cost, r);
+    let fakeAttempts = 0;
+    while (isCostEqual(fakePrice, unitObj.Cost) && fakeAttempts++ < 10) {
+        fakePrice = getSimilarPrice(unitObj.Cost, r);
+    }
     const imgSource = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
     let uniqUri;
     let techHelper;
@@ -291,13 +295,13 @@ const getPriceQ = (type: 'unitPrice' | 'buildingPrice' | 'techPrice', excludeNav
             return [
                 {
                     id: uuid.v4(),
-                    type: 'buildingPrice',
+                    type,
                     cost: unitObj.Cost,
                     isCorrect: true,
                 },
                 {
                     id: uuid.v4(),
-                    type: 'buildingPrice',
+                    type,
                     cost: fakePrice,
                     isCorrect: false,
                 },
@@ -846,15 +850,25 @@ export const getUpgradePriceQ = (direction: 'upgradeToPrice' | 'priceToUpgrade',
     const cost = upgradeObj.Cost;
     const upgradeName = getUpgradeDisplayName(upgradeId);
     if (direction === 'upgradeToPrice') {
-        const fakeCost = getSimilarPrice(cost, r);
         const usedCosts: Cost[] = [cost];
+        const usedUpgradeIds = new Set<string>([upgradeId]);
         const getOther = (): Answer => {
-            const otherId = withCost[Math.floor(r() * withCost.length)];
-            const otherCost = MainData.data.data.unit_upgrades[otherId].Cost;
-            if (isCostEqual(otherCost, cost) || usedCosts.some((c) => isCostEqual(c, otherCost)))
-                return getOther();
-            usedCosts.push(otherCost);
-            return { id: uuid.v4(), type: 'unitPrice', cost: otherCost, isCorrect: false };
+            const maxAttempts = 50;
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const otherId = withCost[Math.floor(r() * withCost.length)];
+                const otherCost = MainData.data.data.unit_upgrades[otherId].Cost;
+                if (usedUpgradeIds.has(otherId) || isCostEqual(otherCost, cost) || usedCosts.some((c) => isCostEqual(c, otherCost)))
+                    continue;
+                usedUpgradeIds.add(otherId);
+                usedCosts.push(otherCost);
+                return { id: uuid.v4(), type: 'unitPrice', cost: otherCost, isCorrect: false };
+            }
+            let fallbackCost = getSimilarPrice(cost, r);
+            let fallbackAttempts = 0;
+            while (usedCosts.some((c) => isCostEqual(c, fallbackCost)) && fallbackAttempts++ < 10)
+                fallbackCost = getSimilarPrice(cost, r);
+            usedCosts.push(fallbackCost);
+            return { id: uuid.v4(), type: 'unitPrice', cost: fallbackCost, isCorrect: false };
         };
         const text = t ? t('questions.upgradePrice_upgradeToPrice') : 'What is the cost of this upgrade?';
         return {
@@ -873,14 +887,30 @@ export const getUpgradePriceQ = (direction: 'upgradeToPrice' | 'priceToUpgrade',
         };
     }
     const usedCosts: Cost[] = [cost];
+    const usedUpgradeIds = new Set<string>([upgradeId]);
     const getOtherUpgrade = (): Answer => {
-        const otherId = withCost[Math.floor(r() * withCost.length)];
-        const otherCost = MainData.data.data.unit_upgrades[otherId].Cost;
-        if (isCostEqual(otherCost, cost) || usedCosts.some((c) => isCostEqual(c, otherCost)))
-            return getOtherUpgrade();
-        usedCosts.push(otherCost);
-        const name = getUpgradeDisplayName(otherId);
-        return { id: uuid.v4(), text: name, type: 'unitPrice', isCorrect: false, image: getUpgradeIconUrl(otherId) };
+        const maxAttempts = 50;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const otherId = withCost[Math.floor(r() * withCost.length)];
+            const otherCost = MainData.data.data.unit_upgrades[otherId].Cost;
+            if (usedUpgradeIds.has(otherId) || isCostEqual(otherCost, cost) || usedCosts.some((c) => isCostEqual(c, otherCost)))
+                continue;
+            usedUpgradeIds.add(otherId);
+            usedCosts.push(otherCost);
+            const name = getUpgradeDisplayName(otherId);
+            return { id: uuid.v4(), text: name, type: 'unitPrice', isCorrect: false, image: getUpgradeIconUrl(otherId) };
+        }
+        const wrongPool = withCost.filter((k) => k !== upgradeId);
+        const fallbackId = wrongPool.find((k) => !usedUpgradeIds.has(k)) ?? wrongPool[0];
+        if (fallbackId) {
+            usedUpgradeIds.add(fallbackId);
+            const name = getUpgradeDisplayName(fallbackId);
+            return { id: uuid.v4(), text: name, type: 'unitPrice', isCorrect: false, image: getUpgradeIconUrl(fallbackId) };
+        }
+        const anyWrong = [...usedUpgradeIds].find((k) => k !== upgradeId);
+        if (anyWrong)
+            return { id: uuid.v4(), text: getUpgradeDisplayName(anyWrong), type: 'unitPrice', isCorrect: false, image: getUpgradeIconUrl(anyWrong) };
+        return { id: uuid.v4(), text: '', type: 'unitPrice', isCorrect: false, image: '' };
     };
     const costStr = [cost.Food && `F: ${cost.Food}`, cost.Wood && `W: ${cost.Wood}`, cost.Gold && `G: ${cost.Gold}`, cost.Stone && `S: ${cost.Stone}`].filter(Boolean).join(' ');
     const text = t ? t('questions.upgradePrice_priceToUpgrade') : 'Which upgrade costs this much?';
@@ -1019,13 +1049,28 @@ export const getBuildingStatsStatToBuildingQ = (excludeNaval?: boolean, random?:
     };
     const usedIds = new Set<string>([buildingId]);
     const getOther = (): Answer => {
-        const otherId = buildingIds[Math.floor(r() * buildingIds.length)];
-        if (usedIds.has(otherId)) return getOther();
-        const other = MainData.data.data.buildings[otherId];
-        const val = other[statKey];
-        if (val === correctValue) return getOther();
-        usedIds.add(otherId);
-        return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: otherId, image: `https://aoe2techtree.net/img/Buildings/${otherId.toLowerCase()}.png` };
+        const maxAttempts = 80;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const otherId = buildingIds[Math.floor(r() * buildingIds.length)];
+            if (usedIds.has(otherId)) continue;
+            const other = MainData.data.data.buildings[otherId];
+            const val = other[statKey];
+            if (val === correctValue) continue;
+            usedIds.add(otherId);
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: otherId, image: `https://aoe2techtree.net/img/Buildings/${otherId.toLowerCase()}.png` };
+        }
+        const fallbackId = buildingIds.find((id) => !usedIds.has(id) && id !== buildingId) ?? buildingIds.find((id) => id !== buildingId);
+        if (fallbackId) {
+            usedIds.add(fallbackId);
+            const other = MainData.data.data.buildings[fallbackId];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: fallbackId, image: `https://aoe2techtree.net/img/Buildings/${fallbackId.toLowerCase()}.png` };
+        }
+        const anyOther = buildingIds.find((id) => id !== buildingId);
+        if (anyOther) {
+            const other = MainData.data.data.buildings[anyOther];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: anyOther, image: `https://aoe2techtree.net/img/Buildings/${anyOther.toLowerCase()}.png` };
+        }
+        return { id: uuid.v4(), text: '', type: 'civInfo', isCorrect: false, buildingId: '', image: '' };
     };
     const text = t ? t('questions.buildingStats_statToBuilding') : 'Which building has this value for this stat?';
     return {
@@ -1075,11 +1120,21 @@ export const getBuildingDescQ = (excludeNaval?: boolean, random?: RandomFn, t?: 
     const correctAnswer: Answer = { id: uuid.v4(), text: buildingName, type: 'civInfo', isCorrect: true, buildingId, image: `https://aoe2techtree.net/img/Buildings/${buildingId.toLowerCase()}.png` };
     const usedIds = new Set<string>([buildingId]);
     const getOther = (): Answer => {
-        const otherId = buildingIds[Math.floor(r() * buildingIds.length)];
-        if (usedIds.has(otherId)) return getOther();
-        usedIds.add(otherId);
-        const other = MainData.data.data.buildings[otherId];
-        return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: otherId, image: `https://aoe2techtree.net/img/Buildings/${otherId.toLowerCase()}.png` };
+        const maxAttempts = 80;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const otherId = buildingIds[Math.floor(r() * buildingIds.length)];
+            if (usedIds.has(otherId)) continue;
+            usedIds.add(otherId);
+            const other = MainData.data.data.buildings[otherId];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: otherId, image: `https://aoe2techtree.net/img/Buildings/${otherId.toLowerCase()}.png` };
+        }
+        const fallbackId = buildingIds.find((id) => !usedIds.has(id)) ?? buildingIds.find((id) => id !== buildingId);
+        if (fallbackId) {
+            usedIds.add(fallbackId);
+            const other = MainData.data.data.buildings[fallbackId];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, buildingId: fallbackId, image: `https://aoe2techtree.net/img/Buildings/${fallbackId.toLowerCase()}.png` };
+        }
+        return { id: uuid.v4(), text: '', type: 'civInfo', isCorrect: false, buildingId: '', image: '' };
     };
     const text = t ? t('questions.buildingDesc_descToBuilding') : 'Which building is described here?';
     return {
@@ -1108,11 +1163,21 @@ export const getUnitDescQ = (excludeNaval?: boolean, excludeUnique?: boolean, ra
     const correctAnswer: Answer = { id: uuid.v4(), text: unitName, type: 'civInfo', isCorrect: true, unitId, image: `https://aoe2techtree.net/img/Units/${unitId.toLowerCase()}.png` };
     const usedIds = new Set<string>([unitId]);
     const getOther = (): Answer => {
-        const otherId = unitIds[Math.floor(r() * unitIds.length)];
-        if (usedIds.has(otherId)) return getOther();
-        usedIds.add(otherId);
-        const other = MainData.data.data.units[otherId];
-        return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, unitId: otherId, image: `https://aoe2techtree.net/img/Units/${otherId.toLowerCase()}.png` };
+        const maxAttempts = 80;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const otherId = unitIds[Math.floor(r() * unitIds.length)];
+            if (usedIds.has(otherId)) continue;
+            usedIds.add(otherId);
+            const other = MainData.data.data.units[otherId];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, unitId: otherId, image: `https://aoe2techtree.net/img/Units/${otherId.toLowerCase()}.png` };
+        }
+        const fallbackId = unitIds.find((id) => !usedIds.has(id)) ?? unitIds.find((id) => id !== unitId);
+        if (fallbackId) {
+            usedIds.add(fallbackId);
+            const other = MainData.data.data.units[fallbackId];
+            return { id: uuid.v4(), text: Strings.data[other.LanguageNameId], type: 'civInfo', isCorrect: false, unitId: fallbackId, image: `https://aoe2techtree.net/img/Units/${fallbackId.toLowerCase()}.png` };
+        }
+        return { id: uuid.v4(), text: '', type: 'civInfo', isCorrect: false, unitId: '', image: '' };
     };
     const text = t ? t('questions.unitDesc_descToUnit') : 'Which unit is described here?';
     return {
