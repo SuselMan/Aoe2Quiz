@@ -69,7 +69,11 @@ export default function MainMenuScreen({ onNavigate, multiplayerDisabled }: Prop
           resizeMode="contain"
         />
       </SoundPressable>
-      <Text style={styles.title}>AoE2 Quiz</Text>
+      <Image
+        source={require('../../assets/images/aoe2quiz.png')}
+        style={styles.titleImage}
+        resizeMode="contain"
+      />
       <SoundPressable style={styles.button} onPress={() => onNavigate('level_select')}>
         <Text style={styles.buttonText}>{t('menu.singlePlayer')}</Text>
       </SoundPressable>
@@ -138,11 +142,11 @@ const styles = StyleSheet.create({
     color: '#2e5560',
     fontWeight: 'bold',
   },
-  title: {
-    fontFamily: 'Balthazar',
-    fontSize: 32,
+  titleImage: {
+    width: '100%',
+    maxWidth: 420,
+    height: 170,
     marginBottom: 40,
-    color: '#1a1a1a',
   },
   button: {
     width: '100%',

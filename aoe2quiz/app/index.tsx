@@ -115,7 +115,7 @@ export default function Index() {
   const level = quizLevelId ? getDifficultyLevelById(quizLevelId) : null;
 
   const backgroundSource =
-    screen === 'menu' || screen === 'level_select' || screen === 'settings' || screen === 'multiplayer_entry' || screen === 'multiplayer_searching' || screen === 'multiplayer_result' || screen === 'training_select' || screen === 'leaderboard'
+    screen === 'menu' || screen === 'level_select' || screen === 'multiplayer_entry' || screen === 'multiplayer_result' || screen === 'training_select' || screen === 'leaderboard'
       ? require('../assets/images/bg_main3.png')
       : require('../assets/images/bg.png');
 

@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import MainData from '@/app/gameData';
 import { LanguageProvider } from '@/src/context/LanguageContext';
 import { MusicProvider } from '@/src/context/MusicContext';
+import { preloadButtonSound } from '@/src/utils/sounds';
 import { Slot } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
@@ -22,7 +23,10 @@ export default function RootLayout() {
   useEffect(() => {
     if (!loaded) return;
     MainData.loadFromRemote()
-      .then(() => setDataReady(true))
+      .then(() => {
+        setDataReady(true);
+        preloadButtonSound();
+      })
       .catch((e) => setDataError(e instanceof Error ? e.message : String(e)));
   }, [loaded]);
 
