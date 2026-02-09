@@ -54,6 +54,55 @@ function isUniqueUnit(unitId: string): boolean {
     return getUniqueUnitIdSet().has(unitId);
 }
 
+/** IDs of units/buildings/techs that appear in at least one civ's tech tree (skirmish/multiplayer). Campaign-only content is excluded from questions. */
+let _inTechTreeUnitIds: Set<string> | null = null;
+let _inTechTreeBuildingIds: Set<string> | null = null;
+let _inTechTreeTechIds: Set<string> | null = null;
+
+function getInTechTreeUnitIds(): Set<string> {
+    if (_inTechTreeUnitIds) return _inTechTreeUnitIds;
+    const set = new Set<string>();
+    Object.keys(MainData.data.techtrees || {}).forEach((civId) => {
+        (MainData.data.techtrees[civId].units || []).forEach((u: { id: number }) => set.add(String(u.id)));
+        const u = MainData.data.techtrees[civId].unique;
+        if (u?.castleAgeUniqueUnit != null) set.add(String(u.castleAgeUniqueUnit));
+        if (u?.imperialAgeUniqueUnit != null) set.add(String(u.imperialAgeUniqueUnit));
+    });
+    _inTechTreeUnitIds = set;
+    return set;
+}
+
+function getInTechTreeBuildingIds(): Set<string> {
+    if (_inTechTreeBuildingIds) return _inTechTreeBuildingIds;
+    const set = new Set<string>();
+    Object.keys(MainData.data.techtrees || {}).forEach((civId) => {
+        (MainData.data.techtrees[civId].buildings || []).forEach((b: { id: number }) => set.add(String(b.id)));
+    });
+    _inTechTreeBuildingIds = set;
+    return set;
+}
+
+function getInTechTreeTechIds(): Set<string> {
+    if (_inTechTreeTechIds) return _inTechTreeTechIds;
+    const set = new Set<string>();
+    Object.keys(MainData.data.techtrees || {}).forEach((civId) => {
+        (MainData.data.techtrees[civId].techs || []).forEach((t: { id: number }) => set.add(String(t.id)));
+        const u = MainData.data.techtrees[civId].unique;
+        if (u?.castleAgeUniqueTech != null) set.add(String(u.castleAgeUniqueTech));
+        if (u?.imperialAgeUniqueTech != null) set.add(String(u.imperialAgeUniqueTech));
+    });
+    _inTechTreeTechIds = set;
+    return set;
+}
+
+/** Filter IDs to only those that appear in at least one civ tech tree (exclude campaign-only). */
+function filterIdsInTechTree(fieldName: string, ids: string[]): string[] {
+    if (fieldName === 'units') return ids.filter((id) => getInTechTreeUnitIds().has(id));
+    if (fieldName === 'buildings') return ids.filter((id) => getInTechTreeBuildingIds().has(id));
+    if (fieldName === 'techs') return ids.filter((id) => getInTechTreeTechIds().has(id));
+    return ids;
+}
+
 /** Unique buildings allowed in "What price of this building?" from level 6 (knight) onwards */
 const LEVELS_ALLOW_UNIQUE_BUILDINGS = new Set(['knight', 'cavalier', 'paladin', 'king']);
 
@@ -107,10 +156,10 @@ export const getCivInfoQ = (random?: RandomFn, t?: TranslateFn): Question => {
 
 export const getTechInfoA = (isCorrect: boolean = false, exclude?: string, usedTechIds?: Set<string>, excludeNaval?: boolean, excludeUniqueTech?: boolean, random?: RandomFn): Answer => {
     const r = random ?? (() => Math.random());
-    let techIds = Object.keys(MainData.data.data.techs);
+    let techIds = filterIdsInTechTree('techs', Object.keys(MainData.data.data.techs));
     if (excludeNaval) techIds = techIds.filter((id) => !isNavalTech(id));
     if (excludeUniqueTech) techIds = techIds.filter((id) => !isUniqueTech(id));
-    if (techIds.length === 0) techIds = Object.keys(MainData.data.data.techs);
+    if (techIds.length === 0) techIds = filterIdsInTechTree('techs', Object.keys(MainData.data.data.techs));
     const techId = techIds[Math.floor(r() * techIds.length)];
     const techName = Strings.data[MainData.data.data.techs[techId].LanguageNameId];
     let techInfo;
@@ -181,7 +230,7 @@ const isIdNaval = (fieldName: string, id: string): boolean => {
 export const getPriceA = (isCorrect: boolean = false, fieldName: string, exclude?: Cost, usedCosts?: Cost[], excludeNaval?: boolean, excludeUniqueTech?: boolean, allowUniqueBuildings?: boolean, random?: RandomFn): Answer => {
     const r = random ?? (() => Math.random());
     // @ts-ignore
-    let unitIds: string[] = Object.keys(MainData.data.data[fieldName]);
+    let unitIds: string[] = filterIdsInTechTree(fieldName, Object.keys(MainData.data.data[fieldName]));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isIdNaval(fieldName, id));
     if (fieldName === 'buildings' && !allowUniqueBuildings) unitIds = unitIds.filter((id) => !isUniqueBuilding(id));
     if (fieldName === 'techs') {
@@ -191,7 +240,7 @@ export const getPriceA = (isCorrect: boolean = false, fieldName: string, exclude
     if (fieldName === 'units' && excludeUniqueTech) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
     if (unitIds.length === 0) {
         // @ts-ignore
-        unitIds = Object.keys(MainData.data.data[fieldName]);
+        unitIds = filterIdsInTechTree(fieldName, Object.keys(MainData.data.data[fieldName]));
     }
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     // @ts-ignore
@@ -233,7 +282,7 @@ const getPriceQ = (type: 'unitPrice' | 'buildingPrice' | 'techPrice', excludeNav
     const fieldName: string = priceType2FieldName[type] || '';
     const allowUniqueBuildings = levelId ? LEVELS_ALLOW_UNIQUE_BUILDINGS.has(levelId) : false;
     // @ts-ignore
-    let unitIds: string[] = Object.keys(MainData.data.data[fieldName]);
+    let unitIds: string[] = filterIdsInTechTree(fieldName, Object.keys(MainData.data.data[fieldName]));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isIdNaval(fieldName, id));
     if (type === 'buildingPrice' && !allowUniqueBuildings) unitIds = unitIds.filter((id) => !isUniqueBuilding(id));
     if (type === 'techPrice') {
@@ -243,7 +292,7 @@ const getPriceQ = (type: 'unitPrice' | 'buildingPrice' | 'techPrice', excludeNav
     if (type === 'unitPrice' && excludeUniqueTech) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
     if (unitIds.length === 0) {
         // @ts-ignore
-        unitIds = Object.keys(MainData.data.data[fieldName]);
+        unitIds = filterIdsInTechTree(fieldName, Object.keys(MainData.data.data[fieldName]));
     }
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     // @ts-ignore
@@ -600,10 +649,10 @@ function getUnitAnswerWithStat(
     random?: RandomFn
 ): Answer {
     const r = random ?? (() => Math.random());
-    let unitIds = Object.keys(MainData.data.data.units);
+    let unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isNavalUnit(id));
     if (excludeUnique) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
-    if (unitIds.length === 0) unitIds = Object.keys(MainData.data.data.units);
+    if (unitIds.length === 0) unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     if (unitId === excludeUnitId || usedUnitIds?.has(unitId)) {
         return getUnitAnswerWithStat(isCorrect, excludeUnitId, usedUnitIds, excludeNaval, excludeUnique, statKey, r);
@@ -638,10 +687,10 @@ function getStatI18nKey(statKey: UnitStatKey): string {
 /** Question: Show unit stats, ask which unit has them. 4 unit answer options. */
 export const getUnitStatsToUnitQ = (excludeNaval?: boolean, excludeUnique?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let unitIds = Object.keys(MainData.data.data.units);
+    let unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isNavalUnit(id));
     if (excludeUnique) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
-    if (unitIds.length === 0) unitIds = Object.keys(MainData.data.data.units);
+    if (unitIds.length === 0) unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     const unitObj = MainData.data.data.units[unitId];
     const unitName = Strings.data[unitObj.LanguageNameId];
@@ -682,10 +731,10 @@ export const getUnitStatsToUnitQ = (excludeNaval?: boolean, excludeUnique?: bool
 /** Question: Show unit, ask for specific stat value. 4 numeric answer options. */
 export const getUnitToStatQ = (excludeNaval?: boolean, excludeUnique?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let unitIds = Object.keys(MainData.data.data.units);
+    let unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isNavalUnit(id));
     if (excludeUnique) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
-    if (unitIds.length === 0) unitIds = Object.keys(MainData.data.data.units);
+    if (unitIds.length === 0) unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     const unitObj = MainData.data.data.units[unitId];
     const unitName = Strings.data[unitObj.LanguageNameId];
@@ -818,11 +867,11 @@ export const getTreeBrunchQ = (random?: RandomFn, t?: TranslateFn): Question => 
 /** Question: Show tech, ask research time in seconds. 4 time options. */
 export const getTechTimeQ = (excludeNaval?: boolean, excludeUniqueTech?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let techIds = Object.keys(MainData.data.data.techs);
+    let techIds = filterIdsInTechTree('techs', Object.keys(MainData.data.data.techs));
     if (excludeNaval) techIds = techIds.filter((id) => !isNavalTech(id));
     if (excludeUniqueTech) techIds = techIds.filter((id) => !isUniqueTech(id));
     techIds = techIds.filter((id) => id !== TECH_ID_EXCLUDED_FROM_PRICE);
-    if (techIds.length === 0) techIds = Object.keys(MainData.data.data.techs);
+    if (techIds.length === 0) techIds = filterIdsInTechTree('techs', Object.keys(MainData.data.data.techs));
     const techId = techIds[Math.floor(r() * techIds.length)];
     const techObj = MainData.data.data.techs[techId];
     const techName = Strings.data[techObj.LanguageNameId];
@@ -1108,10 +1157,10 @@ function getBuildingStatI18nKey(key: BuildingStatKey): string {
 /** Question: Show building, ask stat value. */
 export const getBuildingStatsBuildingToStatQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let buildingIds = Object.keys(MainData.data.data.buildings);
+    let buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     if (excludeNaval) buildingIds = buildingIds.filter((id) => !isNavalBuilding(id));
     buildingIds = buildingIds.filter((id) => !isUniqueBuilding(id));
-    if (buildingIds.length === 0) buildingIds = Object.keys(MainData.data.data.buildings);
+    if (buildingIds.length === 0) buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     const buildingId = buildingIds[Math.floor(r() * buildingIds.length)];
     const building = MainData.data.data.buildings[buildingId];
     const statKey = BUILDING_STAT_KEYS[Math.floor(r() * BUILDING_STAT_KEYS.length)];
@@ -1146,10 +1195,10 @@ export const getBuildingStatsBuildingToStatQ = (excludeNaval?: boolean, random?:
 /** Question: Show stat value, ask which building. */
 export const getBuildingStatsStatToBuildingQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let buildingIds = Object.keys(MainData.data.data.buildings);
+    let buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     if (excludeNaval) buildingIds = buildingIds.filter((id) => !isNavalBuilding(id));
     buildingIds = buildingIds.filter((id) => !isUniqueBuilding(id));
-    if (buildingIds.length === 0) buildingIds = Object.keys(MainData.data.data.buildings);
+    if (buildingIds.length === 0) buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     const buildingId = buildingIds[Math.floor(r() * buildingIds.length)];
     const building = MainData.data.data.buildings[buildingId];
     const statKey = BUILDING_STAT_KEYS[Math.floor(r() * BUILDING_STAT_KEYS.length)];
@@ -1225,10 +1274,10 @@ function getUnitDescForQuestion(html: string): string {
 /** Question: Show building description, ask which building. */
 export const getBuildingDescQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let buildingIds = Object.keys(MainData.data.data.buildings);
+    let buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     if (excludeNaval) buildingIds = buildingIds.filter((id) => !isNavalBuilding(id));
     buildingIds = buildingIds.filter((id) => !isUniqueBuilding(id));
-    if (buildingIds.length === 0) buildingIds = Object.keys(MainData.data.data.buildings);
+    if (buildingIds.length === 0) buildingIds = filterIdsInTechTree('buildings', Object.keys(MainData.data.data.buildings));
     const buildingId = buildingIds[Math.floor(r() * buildingIds.length)];
     const building = MainData.data.data.buildings[buildingId];
     const rawDesc = Strings.data[building.LanguageHelpId] || '';
@@ -1268,10 +1317,10 @@ export const getBuildingDescQ = (excludeNaval?: boolean, random?: RandomFn, t?: 
 /** Question: Show unit description, ask which unit. */
 export const getUnitDescQ = (excludeNaval?: boolean, excludeUnique?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
-    let unitIds = Object.keys(MainData.data.data.units);
+    let unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     if (excludeNaval) unitIds = unitIds.filter((id) => !isNavalUnit(id));
     if (excludeUnique) unitIds = unitIds.filter((id) => !isUniqueUnit(id));
-    if (unitIds.length === 0) unitIds = Object.keys(MainData.data.data.units);
+    if (unitIds.length === 0) unitIds = filterIdsInTechTree('units', Object.keys(MainData.data.data.units));
     const unitId = unitIds[Math.floor(r() * unitIds.length)];
     const unit = MainData.data.data.units[unitId];
     const rawDesc = Strings.data[unit.LanguageHelpId] || '';
