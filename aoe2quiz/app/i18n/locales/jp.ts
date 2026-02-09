@@ -86,8 +86,10 @@ export const jp = {
   questions: {
     techPrice_techToPrice: 'この技術のコストは？',
     techPrice_priceToTech: 'このコストの技術はどれ？',
+    uniqueTechPrice_techToPrice: 'この固有技術のコストは？',
     unitPrice_unitToPrice: 'このユニットのコストは？',
     unitPrice_priceToUnit: 'このコストのユニットはどれ？',
+    uniqueUnitPrice_unitToPrice: 'この固有ユニットのコストは？',
     buildingPrice_buildingToPrice: 'この建物のコストは？',
     buildingPrice_priceToBuilding: 'このコストの建物はどれ？',
     civBonus_bonusToCiv: 'このボーナスを持つ文明は？',

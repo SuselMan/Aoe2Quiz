@@ -86,8 +86,10 @@ export const ru = {
   questions: {
     techPrice_techToPrice: 'Какая цена у этой технологии?',
     techPrice_priceToTech: 'Какая технология стоит столько?',
+    uniqueTechPrice_techToPrice: 'Какова цена этой уникальной технологии?',
     unitPrice_unitToPrice: 'Какая цена у этого юнита?',
     unitPrice_priceToUnit: 'Какой юнит стоит столько?',
+    uniqueUnitPrice_unitToPrice: 'Какова цена этого уникального юнита?',
     buildingPrice_buildingToPrice: 'Какая цена у этого здания?',
     buildingPrice_priceToBuilding: 'Какое здание стоит столько?',
     civBonus_bonusToCiv: 'Чья это особенность?',

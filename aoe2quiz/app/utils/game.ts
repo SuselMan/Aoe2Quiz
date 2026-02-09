@@ -312,6 +312,124 @@ const getPriceQ = (type: 'unitPrice' | 'buildingPrice' | 'techPrice', excludeNav
     };
 }
 
+/** Question: show unique tech, ask its cost. Only unique (castle/imperial) techs. */
+export const getUniqueTechPriceQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
+    const r = random ?? (() => Math.random());
+    const uniqueTechIds = Array.from(getUniqueTechIdSet()).filter((id) => {
+        const tech = MainData.data.data.techs[id];
+        if (!tech || id === TECH_ID_EXCLUDED_FROM_PRICE) return false;
+        if (excludeNaval && isNavalTech(id)) return false;
+        const total = (tech.Cost?.Food || 0) + (tech.Cost?.Wood || 0) + (tech.Cost?.Gold || 0) + (tech.Cost?.Stone || 0);
+        return total > 0;
+    });
+    if (uniqueTechIds.length === 0) return getTechTimeQ(excludeNaval, false, r, t);
+    const techId = uniqueTechIds[Math.floor(r() * uniqueTechIds.length)];
+    const techObj = MainData.data.data.techs[techId];
+    const techName = Strings.data[techObj.LanguageNameId];
+    const cost = techObj.Cost;
+    let fakePrice = getSimilarPrice(cost, r);
+    let fakeAttempts = 0;
+    while (isCostEqual(fakePrice, cost) && fakeAttempts++ < 10) fakePrice = getSimilarPrice(cost, r);
+    const usedCosts: Cost[] = [cost, fakePrice];
+    const usedTechIds = new Set<string>([techId]);
+    const getOtherCost = (): Cost => {
+        const others = uniqueTechIds.filter((id) => !usedTechIds.has(id));
+        for (let attempt = 0; attempt < 50; attempt++) {
+            if (others.length === 0) break;
+            const otherId = others[Math.floor(r() * others.length)];
+            const otherCost = MainData.data.data.techs[otherId].Cost;
+            if (usedCosts.some((c) => isCostEqual(c, otherCost))) continue;
+            usedTechIds.add(otherId);
+            usedCosts.push(otherCost);
+            return otherCost;
+        }
+        let fallback = getSimilarPrice(cost, r);
+        while (usedCosts.some((c) => isCostEqual(c, fallback))) fallback = getSimilarPrice(cost, r);
+        usedCosts.push(fallback);
+        return fallback;
+    };
+    const techHelperArr = Strings.data[techObj.LanguageHelpId].split(/<b>.*<\/b>/);
+    const techHelperBr = techHelperArr[techHelperArr.length - 1].split('<br>');
+    const techHelper = techHelperBr[techHelperBr.length - 1];
+    const text = t ? t('questions.uniqueTechPrice_techToPrice') : 'What is the cost of this unique technology?';
+    const answers = shuffleArray(
+        [
+            { id: uuid.v4(), type: 'techPrice' as const, cost, isCorrect: true },
+            { id: uuid.v4(), type: 'techPrice' as const, cost: fakePrice, isCorrect: false },
+            { id: uuid.v4(), type: 'techPrice' as const, cost: getOtherCost(), isCorrect: false },
+            { id: uuid.v4(), type: 'techPrice' as const, cost: getOtherCost(), isCorrect: false },
+        ],
+        r
+    );
+    return {
+        variant: 'uniqueTechPrice_techToPrice',
+        type: 'unitPrice',
+        questionKey: `uniqueTechPrice_${techId}`,
+        text,
+        subText: techName,
+        additionalInfo: techHelper,
+        image: getUniqueTechIconUrl(techId),
+        answers,
+    };
+}
+
+/** Question: show unique unit, ask its cost. Only unique (castle/imperial) units. */
+export const getUniqueUnitPriceQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
+    const r = random ?? (() => Math.random());
+    const uniqueUnitIds = Array.from(getUniqueUnitIdSet()).filter((id) => {
+        const unit = MainData.data.data.units[id];
+        if (!unit) return false;
+        if (excludeNaval && isNavalUnit(id)) return false;
+        const total = (unit.Cost?.Food || 0) + (unit.Cost?.Wood || 0) + (unit.Cost?.Gold || 0) + (unit.Cost?.Stone || 0);
+        return total > 0;
+    });
+    if (uniqueUnitIds.length === 0) return getPriceQ('unitPrice', excludeNaval, true, undefined, r, t);
+    const unitId = uniqueUnitIds[Math.floor(r() * uniqueUnitIds.length)];
+    const unitObj = MainData.data.data.units[unitId];
+    const unitName = Strings.data[unitObj.LanguageNameId];
+    const cost = unitObj.Cost;
+    let fakePrice = getSimilarPrice(cost, r);
+    let fakeAttempts = 0;
+    while (isCostEqual(fakePrice, cost) && fakeAttempts++ < 10) fakePrice = getSimilarPrice(cost, r);
+    const usedCosts: Cost[] = [cost, fakePrice];
+    const usedUnitIds = new Set<string>([unitId]);
+    const getOtherCost = (): Cost => {
+        const others = uniqueUnitIds.filter((id) => !usedUnitIds.has(id));
+        for (let attempt = 0; attempt < 50; attempt++) {
+            if (others.length === 0) break;
+            const otherId = others[Math.floor(r() * others.length)];
+            const otherCost = MainData.data.data.units[otherId].Cost;
+            if (usedCosts.some((c) => isCostEqual(c, otherCost))) continue;
+            usedUnitIds.add(otherId);
+            usedCosts.push(otherCost);
+            return otherCost;
+        }
+        let fallback = getSimilarPrice(cost, r);
+        while (usedCosts.some((c) => isCostEqual(c, fallback))) fallback = getSimilarPrice(cost, r);
+        usedCosts.push(fallback);
+        return fallback;
+    };
+    const text = t ? t('questions.uniqueUnitPrice_unitToPrice') : 'What is the cost of this unique unit?';
+    const answers = shuffleArray(
+        [
+            { id: uuid.v4(), type: 'unitPrice' as const, cost, isCorrect: true },
+            { id: uuid.v4(), type: 'unitPrice' as const, cost: fakePrice, isCorrect: false },
+            { id: uuid.v4(), type: 'unitPrice' as const, cost: getOtherCost(), isCorrect: false },
+            { id: uuid.v4(), type: 'unitPrice' as const, cost: getOtherCost(), isCorrect: false },
+        ],
+        r
+    );
+    return {
+        variant: 'uniqueUnitPrice_unitToPrice',
+        type: 'unitPrice',
+        questionKey: `uniqueUnitPrice_${unitId}`,
+        text,
+        subText: unitName,
+        image: `https://aoe2techtree.net/img/Units/${unitId.toLowerCase()}.png`,
+        answers,
+    };
+}
+
 export const getCivTechQ = (excludeNaval?: boolean, random?: RandomFn, t?: TranslateFn): Question => {
     const r = random ?? (() => Math.random());
     const correctAnswer = getCivInfoA(true, undefined, undefined, r);
@@ -1191,14 +1309,16 @@ export const getUnitDescQ = (excludeNaval?: boolean, excludeUnique?: boolean, ra
 }
 
 type LegacyKey =
-    | 'civInfo' | 'unitPrice' | 'buildingPrice' | 'techPrice' | 'civTech' | 'techInfo' | 'treeBrunch'
+    | 'civInfo' | 'unitPrice' | 'buildingPrice' | 'techPrice' | 'uniqueTechPrice' | 'uniqueUnitPrice' | 'civTech' | 'techInfo' | 'treeBrunch'
     | 'uniqueUnitToCiv' | 'civToUniqueUnit' | 'unitStatsToUnit' | 'unitToStat'
     | 'techTime' | 'civToUniqueTech' | 'upgradePriceToPrice' | 'upgradePriceToUpgrade' | 'upgradeTimeToTime' | 'upgradeTimeToUpgrade'
     | 'buildingStatsToStat' | 'buildingStatToBuilding' | 'unitDesc';
 
 const VARIANT_TO_LEGACY: Partial<Record<QuestionTypeVariantValue, LegacyKey>> = {
     techPrice_techToPrice: 'techPrice',
+    uniqueTechPrice_techToPrice: 'uniqueTechPrice',
     unitPrice_unitToPrice: 'unitPrice',
+    uniqueUnitPrice_unitToPrice: 'uniqueUnitPrice',
     buildingPrice_buildingToPrice: 'buildingPrice',
     civBonus_bonusToCiv: 'civInfo',
     civUniqueUnit_unitToCiv: 'uniqueUnitToCiv',
@@ -1247,7 +1367,11 @@ export function getQuestionByVariants(
         if (legacy === 'civToUniqueUnit') return getCivToUniqueUnitQ(excludeNaval, r, t);
         if (legacy === 'unitStatsToUnit') return getUnitStatsToUnitQ(excludeNaval, excludeUniqueTech, r, t);
         if (legacy === 'unitToStat') return getUnitToStatQ(excludeNaval, excludeUniqueTech, r, t);
-        if (legacy === 'unitPrice' || legacy === 'buildingPrice' || legacy === 'techPrice') return getPriceQ(legacy, excludeNaval, excludeUniqueTech, levelId, r, t);
+        if (legacy === 'buildingPrice') return getPriceQ('buildingPrice', excludeNaval, excludeUniqueTech, levelId, r, t);
+        if (legacy === 'unitPrice') return getPriceQ('unitPrice', excludeNaval, true, levelId, r, t);
+        if (legacy === 'techPrice') return getPriceQ('techPrice', excludeNaval, true, levelId, r, t);
+        if (legacy === 'uniqueUnitPrice') return getUniqueUnitPriceQ(excludeNaval, r, t);
+        if (legacy === 'uniqueTechPrice') return getUniqueTechPriceQ(excludeNaval, r, t);
         if (legacy === 'techTime') return getTechTimeQ(excludeNaval, excludeUniqueTech, r, t);
         if (legacy === 'civToUniqueTech') return getCivToUniqueTechQ(excludeNaval, r, t);
         if (legacy === 'upgradePriceToPrice') return getUpgradePriceQ('upgradeToPrice', r, t);

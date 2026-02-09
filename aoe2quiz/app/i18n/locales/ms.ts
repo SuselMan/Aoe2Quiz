@@ -86,8 +86,10 @@ export const ms = {
   questions: {
     techPrice_techToPrice: 'Berapakah kos teknologi ini?',
     techPrice_priceToTech: 'Teknologi mana yang berharga sebanyak ini?',
+    uniqueTechPrice_techToPrice: 'Berapakah kos teknologi unik ini?',
     unitPrice_unitToPrice: 'Berapakah kos unit ini?',
     unitPrice_priceToUnit: 'Unit mana yang berharga sebanyak ini?',
+    uniqueUnitPrice_unitToPrice: 'Berapakah kos unit unik ini?',
     buildingPrice_buildingToPrice: 'Berapakah kos bangunan ini?',
     buildingPrice_priceToBuilding: 'Bangunan mana yang berharga sebanyak ini?',
     civBonus_bonusToCiv: 'Tamadun mana yang mempunyai bonus ini?',

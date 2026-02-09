@@ -86,8 +86,10 @@ export const hi = {
   questions: {
     techPrice_techToPrice: 'इस तकनीक की लागत क्या है?',
     techPrice_priceToTech: 'कौन सी तकनीक की इतनी लागत है?',
+    uniqueTechPrice_techToPrice: 'इस अनोखी तकनीक की लागत क्या है?',
     unitPrice_unitToPrice: 'इस यूनिट की लागत क्या है?',
     unitPrice_priceToUnit: 'कौन सी यूनिट की इतनी लागत है?',
+    uniqueUnitPrice_unitToPrice: 'इस अनोखी यूनिट की लागत क्या है?',
     buildingPrice_buildingToPrice: 'इस इमारत की लागत क्या है?',
     buildingPrice_priceToBuilding: 'कौन सी इमारत की इतनी लागत है?',
     civBonus_bonusToCiv: 'किस सभ्यता को यह बोनस मिलता है?',

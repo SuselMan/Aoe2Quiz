@@ -86,8 +86,10 @@ export const vi = {
   questions: {
     techPrice_techToPrice: 'Chi phí của công nghệ này là bao nhiêu?',
     techPrice_priceToTech: 'Công nghệ nào có giá này?',
+    uniqueTechPrice_techToPrice: 'Chi phí của công nghệ đặc biệt này là bao nhiêu?',
     unitPrice_unitToPrice: 'Chi phí của đơn vị này là bao nhiêu?',
     unitPrice_priceToUnit: 'Đơn vị nào có giá này?',
+    uniqueUnitPrice_unitToPrice: 'Chi phí của đơn vị đặc biệt này là bao nhiêu?',
     buildingPrice_buildingToPrice: 'Chi phí của công trình này là bao nhiêu?',
     buildingPrice_priceToBuilding: 'Công trình nào có giá này?',
     civBonus_bonusToCiv: 'Nền văn minh nào có bonus này?',

@@ -86,8 +86,10 @@ export const pl = {
   questions: {
     techPrice_techToPrice: 'Jaki jest koszt tej technologii?',
     techPrice_priceToTech: 'Która technologia tyle kosztuje?',
+    uniqueTechPrice_techToPrice: 'Jaki jest koszt tej unikalnej technologii?',
     unitPrice_unitToPrice: 'Jaki jest koszt tej jednostki?',
     unitPrice_priceToUnit: 'Która jednostka tyle kosztuje?',
+    uniqueUnitPrice_unitToPrice: 'Jaki jest koszt tej unikalnej jednostki?',
     buildingPrice_buildingToPrice: 'Jaki jest koszt tego budynku?',
     buildingPrice_priceToBuilding: 'Który budynek tyle kosztuje?',
     civBonus_bonusToCiv: 'Która cywilizacja ma tę premię?',

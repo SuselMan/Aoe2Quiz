@@ -86,8 +86,10 @@ export const zh = {
   questions: {
     techPrice_techToPrice: '这项技术的成本是多少？',
     techPrice_priceToTech: '哪项技术花费这么多？',
+    uniqueTechPrice_techToPrice: '这项独特技术的成本是多少？',
     unitPrice_unitToPrice: '这个单位的成本是多少？',
     unitPrice_priceToUnit: '哪个单位花费这么多？',
+    uniqueUnitPrice_unitToPrice: '这个独特单位的成本是多少？',
     buildingPrice_buildingToPrice: '这座建筑的成本是多少？',
     buildingPrice_priceToBuilding: '哪座建筑花费这么多？',
     civBonus_bonusToCiv: '哪个文明拥有此加成？',

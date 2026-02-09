@@ -86,8 +86,10 @@ export const tw = {
   questions: {
     techPrice_techToPrice: '這項技術的成本是多少？',
     techPrice_priceToTech: '哪項技術花費這麼多？',
+    uniqueTechPrice_techToPrice: '這項獨特技術的成本是多少？',
     unitPrice_unitToPrice: '這個單位的成本是多少？',
     unitPrice_priceToUnit: '哪個單位花費這麼多？',
+    uniqueUnitPrice_unitToPrice: '這個獨特單位的成本是多少？',
     buildingPrice_buildingToPrice: '這座建築的成本是多少？',
     buildingPrice_priceToBuilding: '哪座建築花費這麼多？',
     civBonus_bonusToCiv: '哪個文明擁有此加成？',

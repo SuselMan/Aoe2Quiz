@@ -86,8 +86,10 @@ export const ko = {
   questions: {
     techPrice_techToPrice: '이 기술의 비용은?',
     techPrice_priceToTech: '이 비용의 기술은?',
+    uniqueTechPrice_techToPrice: '이 고유 기술의 비용은?',
     unitPrice_unitToPrice: '이 유닛의 비용은?',
     unitPrice_priceToUnit: '이 비용의 유닛은?',
+    uniqueUnitPrice_unitToPrice: '이 고유 유닛의 비용은?',
     buildingPrice_buildingToPrice: '이 건물의 비용은?',
     buildingPrice_priceToBuilding: '이 비용의 건물은?',
     civBonus_bonusToCiv: '이 보너스를 가진 문명은?',

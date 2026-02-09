@@ -6,9 +6,11 @@ export const QuestionTypeVariant = {
   // 1) Tech prices
   techPrice_techToPrice: 'techPrice_techToPrice',
   techPrice_priceToTech: 'techPrice_priceToTech',
+  uniqueTechPrice_techToPrice: 'uniqueTechPrice_techToPrice',
   // 2) Building/unit prices
   unitPrice_unitToPrice: 'unitPrice_unitToPrice',
   unitPrice_priceToUnit: 'unitPrice_priceToUnit',
+  uniqueUnitPrice_unitToPrice: 'uniqueUnitPrice_unitToPrice',
   buildingPrice_buildingToPrice: 'buildingPrice_buildingToPrice',
   buildingPrice_priceToBuilding: 'buildingPrice_priceToBuilding',
   // 3) Civ specifics (unique bonus, unique unit, team bonus) + reverse

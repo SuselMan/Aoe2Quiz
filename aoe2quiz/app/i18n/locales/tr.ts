@@ -86,8 +86,10 @@ export const tr = {
   questions: {
     techPrice_techToPrice: 'Bu teknolojinin maliyeti nedir?',
     techPrice_priceToTech: 'Bu kadar maliyeti olan teknoloji hangisi?',
+    uniqueTechPrice_techToPrice: 'Bu benzersiz teknolojinin maliyeti nedir?',
     unitPrice_unitToPrice: 'Bu birimin maliyeti nedir?',
     unitPrice_priceToUnit: 'Bu kadar maliyeti olan birim hangisi?',
+    uniqueUnitPrice_unitToPrice: 'Bu benzersiz birimin maliyeti nedir?',
     buildingPrice_buildingToPrice: 'Bu yapının maliyeti nedir?',
     buildingPrice_priceToBuilding: 'Bu kadar maliyeti olan yapı hangisi?',
     civBonus_bonusToCiv: 'Bu bonusu hangi uygarlık sağlıyor?',
