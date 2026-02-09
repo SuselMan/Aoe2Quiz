@@ -25,13 +25,11 @@ export default function MainMenuScreen({ onNavigate, multiplayerDisabled }: Prop
     Promise.all([
       storage.getItem(STORAGE_KEYS.multiplayerName),
       storage.getItem(STORAGE_KEYS.multiplayerCiv),
-      storage.getItem(STORAGE_KEYS.multiplayerCountry),
       storage.getItem(STORAGE_KEYS.multiplayerRating),
-    ]).then(([name, civId, legacyCountry, ratingStr]) => {
-      const resolvedCiv = civId || legacyCountry;
+    ]).then(([name, civId, ratingStr]) => {
       setProfile({
         name: name ?? null,
-        civId: resolvedCiv ?? null,
+        civId: civId ?? null,
         rating: ratingStr != null && ratingStr !== '' ? parseInt(ratingStr, 10) : null,
       });
     });

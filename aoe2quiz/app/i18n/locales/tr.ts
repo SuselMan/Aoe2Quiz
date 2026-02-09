@@ -131,7 +131,6 @@ export const tr = {
   multiplayer: {
     connectionError: 'Sunucuya bağlanılamadı',
     enterName: 'Adınızı girin',
-    selectCountry: 'Ülke seçin',
     findGame: 'Maç bul',
     searching: 'Rakip aranıyor...',
     noPlayers: 'Şu an çevrimiçi oyuncu yok. Daha sonra tekrar deneyin.',

@@ -131,7 +131,6 @@ export const zh = {
   multiplayer: {
     connectionError: '无法连接到服务器',
     enterName: '输入你的名字',
-    selectCountry: '选择国家',
     selectCivilization: '选择文明',
     findGame: '寻找游戏',
     searching: '正在寻找对手...',

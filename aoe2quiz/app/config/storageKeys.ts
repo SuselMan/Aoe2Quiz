@@ -3,7 +3,6 @@ export const STORAGE_KEYS = {
   stars: '@aoe2quiz/stars',
   deviceId: '@aoe2quiz/deviceId',
   multiplayerName: '@aoe2quiz/multiplayerName',
-  multiplayerCountry: '@aoe2quiz/multiplayerCountry',
   multiplayerCiv: '@aoe2quiz/multiplayerCiv',
   multiplayerRating: '@aoe2quiz/multiplayerRating',
   musicEnabled: '@aoe2quiz/musicEnabled',

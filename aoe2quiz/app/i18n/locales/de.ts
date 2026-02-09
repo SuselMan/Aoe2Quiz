@@ -131,7 +131,6 @@ export const de = {
   multiplayer: {
     connectionError: 'Verbindung zum Server fehlgeschlagen',
     enterName: 'Name eingeben',
-    selectCountry: 'Land wählen',
     selectCivilization: 'Zivilisation wählen',
     findGame: 'Spiel suchen',
     searching: 'Gegner wird gesucht...',

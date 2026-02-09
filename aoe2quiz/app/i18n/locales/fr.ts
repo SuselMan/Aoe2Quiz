@@ -131,7 +131,6 @@ export const fr = {
   multiplayer: {
     connectionError: 'Impossible de se connecter au serveur',
     enterName: 'Entrez votre nom',
-    selectCountry: 'Choisir le pays',
     selectCivilization: 'Choisir la civilisation',
     findGame: 'Trouver une partie',
     searching: 'Recherche d\'adversaire...',

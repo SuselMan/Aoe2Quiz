@@ -131,7 +131,6 @@ export const br = {
   multiplayer: {
     connectionError: 'Falha ao conectar ao servidor',
     enterName: 'Digite seu nome',
-    selectCountry: 'Selecione o país',
     findGame: 'Encontrar partida',
     searching: 'Procurando oponente...',
     noPlayers: 'Nenhum jogador online. Tente mais tarde.',

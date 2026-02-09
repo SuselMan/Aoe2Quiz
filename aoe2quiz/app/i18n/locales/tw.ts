@@ -131,7 +131,6 @@ export const tw = {
   multiplayer: {
     connectionError: '無法連接到伺服器',
     enterName: '輸入你的名字',
-    selectCountry: '選擇國家',
     selectCivilization: '選擇文明',
     findGame: '尋找遊戲',
     searching: '正在尋找對手...',

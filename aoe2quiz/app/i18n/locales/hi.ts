@@ -131,7 +131,6 @@ export const hi = {
   multiplayer: {
     connectionError: 'सर्वर से कनेक्ट नहीं हो सका',
     enterName: 'अपना नाम दर्ज करें',
-    selectCountry: 'देश चुनें',
     findGame: 'गेम खोजें',
     searching: 'प्रतिद्वंद्वी खोज रहे हैं...',
     noPlayers: 'अभी कोई खिलाड़ी ऑनलाइन नहीं। बाद में कोशिश करें।',

@@ -131,7 +131,6 @@ export const ru = {
   multiplayer: {
     connectionError: 'Не удалось установить соединение с сервером',
     enterName: 'Введите имя',
-    selectCountry: 'Выберите страну',
     selectCivilization: 'Выберите цивилизацию',
     findGame: 'Найти игру',
     searching: 'Ищем противника...',

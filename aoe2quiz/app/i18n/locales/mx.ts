@@ -131,7 +131,6 @@ export const mx = {
   multiplayer: {
     connectionError: 'Error al conectar con el servidor',
     enterName: 'Introduce tu nombre',
-    selectCountry: 'Selecciona país',
     findGame: 'Buscar partida',
     searching: 'Buscando oponente...',
     noPlayers: 'No hay jugadores en línea. Inténtalo más tarde.',

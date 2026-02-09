@@ -169,10 +169,7 @@ export default function Index() {
                 storage
                   .getItem(STORAGE_KEYS.multiplayerName)
                   .then((name) =>
-                    Promise.all([
-                      storage.getItem(STORAGE_KEYS.multiplayerCiv),
-                      storage.getItem(STORAGE_KEYS.multiplayerCountry),
-                    ]).then(([civId, legacy]) => ({ name, civId: civId || legacy }))
+                    storage.getItem(STORAGE_KEYS.multiplayerCiv).then((civId) => ({ name, civId }))
                   )
                   .then(({ name, civId }) => {
                     if (name && civId) {

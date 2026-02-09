@@ -40,15 +40,10 @@ export default function ProfileEditScreen({ onSave, onBack }: Props) {
     storage.getItem(STORAGE_KEYS.multiplayerName).then((savedName) => {
       if (savedName) setName(savedName);
     });
-    Promise.all([
-      storage.getItem(STORAGE_KEYS.multiplayerCiv),
-      storage.getItem(STORAGE_KEYS.multiplayerCountry),
-    ]).then(([savedCiv, savedCountry]) => {
+    storage.getItem(STORAGE_KEYS.multiplayerCiv).then((savedCiv) => {
       const ids = getCivIdsSortedByName();
       const validCiv = savedCiv && ids.includes(savedCiv);
-      const legacyAsCiv = savedCountry && ids.includes(savedCountry);
       if (validCiv) setCivId(savedCiv);
-      else if (legacyAsCiv) setCivId(savedCountry);
       else if (ids.length > 0) setCivId((prev) => (ids.includes(prev) ? prev : ids[0]));
     });
   }, []);

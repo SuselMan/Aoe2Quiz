@@ -131,7 +131,6 @@ export const jp = {
   multiplayer: {
     connectionError: 'サーバーに接続できません',
     enterName: '名前を入力',
-    selectCountry: '国を選択',
     selectCivilization: '文明を選択',
     findGame: '対戦を探す',
     searching: '対戦相手を検索中...',

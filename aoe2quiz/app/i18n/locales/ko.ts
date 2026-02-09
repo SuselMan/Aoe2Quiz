@@ -131,7 +131,6 @@ export const ko = {
   multiplayer: {
     connectionError: '서버에 연결할 수 없습니다',
     enterName: '이름을 입력하세요',
-    selectCountry: '국가 선택',
     findGame: '대전 찾기',
     searching: '상대 찾는 중...',
     noPlayers: '온라인 플레이어가 없습니다. 나중에 다시 시도하세요.',

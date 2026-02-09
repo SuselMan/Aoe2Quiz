@@ -131,7 +131,6 @@ export const en = {
   multiplayer: {
     connectionError: 'Failed to connect to the server',
     enterName: 'Enter your name',
-    selectCountry: 'Select country',
     selectCivilization: 'Select civilization',
     findGame: 'Find game',
     searching: 'Searching for opponent...',

@@ -131,7 +131,6 @@ export const ms = {
   multiplayer: {
     connectionError: 'Gagal menyambung ke pelayan',
     enterName: 'Masukkan nama anda',
-    selectCountry: 'Pilih negara',
     findGame: 'Cari permainan',
     searching: 'Mencari lawan...',
     noPlayers: 'Tiada pemain dalam talian. Cuba lagi nanti.',

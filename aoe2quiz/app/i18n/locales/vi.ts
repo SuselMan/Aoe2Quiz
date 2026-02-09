@@ -131,7 +131,6 @@ export const vi = {
   multiplayer: {
     connectionError: 'Không thể kết nối đến máy chủ',
     enterName: 'Nhập tên của bạn',
-    selectCountry: 'Chọn quốc gia',
     findGame: 'Tìm trận',
     searching: 'Đang tìm đối thủ...',
     noPlayers: 'Hiện không có người chơi. Thử lại sau.',
