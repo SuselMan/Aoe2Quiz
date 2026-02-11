@@ -18,9 +18,11 @@ type Props = {
   onWin: (stars: number) => void;
   onLose: (correctAnswerText: string) => void;
   onMenu: () => void;
+  /** Called when user taps Menu from game-over screen (lost game). Use to count game and go to menu. */
+  onLoseAndGoToMenu?: () => void;
 };
 
-export default function CampaignQuiz({ level, onWin, onLose, onMenu }: Props) {
+export default function CampaignQuiz({ level, onWin, onLose, onMenu, onLoseAndGoToMenu }: Props) {
   const { t } = useLanguage();
   const [questionsLeft, setQuestionsLeft] = useState(level.questionCount);
   const [currentQ, setCurrentQ] = useState<Question>(() => getQuestionByVariants(level.questionVariants, level.id, undefined, t));
@@ -189,7 +191,10 @@ export default function CampaignQuiz({ level, onWin, onLose, onMenu }: Props) {
                 <SoundPressable style={styles.actionButton} onPress={handleRepeat}>
                   <Text style={styles.actionButtonText}>{t('gameOver.repeat')}</Text>
                 </SoundPressable>
-                <SoundPressable style={[styles.actionButton, styles.actionButtonSecondary]} onPress={onMenu}>
+                <SoundPressable
+                  style={[styles.actionButton, styles.actionButtonSecondary]}
+                  onPress={onLoseAndGoToMenu ?? onMenu}
+                >
                   <Text style={styles.actionButtonTextSecondary}>{t('gameOver.menu')}</Text>
                 </SoundPressable>
               </>

@@ -6,6 +6,8 @@ export const STORAGE_KEYS = {
   multiplayerCiv: '@aoe2quiz/multiplayerCiv',
   multiplayerRating: '@aoe2quiz/multiplayerRating',
   musicEnabled: '@aoe2quiz/musicEnabled',
+  totalGamesPlayed: '@aoe2quiz/totalGamesPlayed',
+  supportModalShown: '@aoe2quiz/supportModalShown',
 } as const;
 
 export type StarsPayload = Record<string, number>;

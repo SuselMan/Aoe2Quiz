@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View, Image, ImageBackground, useWindowDimensions, Platform, Alert } from 'react-native';
+import { StyleSheet, View, Text, Image, ImageBackground, Modal, TouchableOpacity, useWindowDimensions, Platform, Alert } from 'react-native';
 import Strings from '@/app/strings';
 import { useLanguage } from '@/src/context/LanguageContext';
 import { getDifficultyLevelById } from '@/src/config/difficulty';
@@ -33,6 +33,7 @@ import TrainingQuiz from '@/src/components/TrainingQuiz';
 import LeaderboardScreen from '@/src/screens/LeaderboardScreen';
 import ProfileEditScreen from '@/src/screens/ProfileEditScreen';
 import SupportScreen from '@/src/screens/SupportScreen';
+import SoundPressable from '@/src/components/ui/SoundPressable';
 import type { QuestionTypeVariantValue } from '@/src/config/questionTypes';
 
 type Screen =
@@ -63,6 +64,15 @@ export default function Index() {
   const [gameOverPayload, setGameOverPayload] = useState<GameOverPayload | null>(null);
   const [stringsVersion, setStringsVersion] = useState(0);
   const [trainingVariant, setTrainingVariant] = useState<QuestionTypeVariantValue | null>(null);
+  const [showSupportModal, setShowSupportModal] = useState(false);
+
+  const incrementGamesPlayed = useCallback(() => {
+    storage.getItem(STORAGE_KEYS.totalGamesPlayed).then((raw) => {
+      const n = raw != null && raw !== '' ? parseInt(raw, 10) : 0;
+      const next = (Number.isNaN(n) ? 0 : n) + 1;
+      storage.setItem(STORAGE_KEYS.totalGamesPlayed, String(next));
+    });
+  }, []);
 
   useEffect(() => {
     Strings.loadForLocale(locale).then(() => {
@@ -98,6 +108,7 @@ export default function Index() {
   }, []);
 
   const handleWin = useCallback((stars: number) => {
+    incrementGamesPlayed();
     playVictorySound();
     setResultStars(stars);
     if (quizLevelId) {
@@ -108,9 +119,31 @@ export default function Index() {
       });
     }
     setScreen('result');
-  }, [quizLevelId]);
+  }, [quizLevelId, incrementGamesPlayed]);
 
   const handleLose = useCallback((_correctAnswerText: string) => {}, []);
+
+  useEffect(() => {
+    if (screen !== 'menu') return;
+    let cancelled = false;
+    storage
+      .getItem(STORAGE_KEYS.totalGamesPlayed)
+      .then((raw) => {
+        const n = raw != null && raw !== '' ? parseInt(raw, 10) : 0;
+        if (cancelled || Number.isNaN(n) || n < 15) return undefined;
+        return storage.getItem(STORAGE_KEYS.supportModalShown);
+      })
+      .then((shown) => {
+        if (cancelled || shown === undefined || shown === '1' || shown === 'true') return;
+        return storage.setItem(STORAGE_KEYS.supportModalShown, '1').then(() => {
+          if (!cancelled) setShowSupportModal(true);
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [screen]);
 
   const level = quizLevelId ? getDifficultyLevelById(quizLevelId) : null;
 
@@ -218,6 +251,11 @@ export default function Index() {
               setQuizLevelId(null);
               setScreen('menu');
             }}
+            onLoseAndGoToMenu={() => {
+              incrementGamesPlayed();
+              setQuizLevelId(null);
+              setScreen('menu');
+            }}
           />
         )}
         {screen === 'result' && (
@@ -269,6 +307,7 @@ export default function Index() {
             opponent={matchPayload.opponent}
             you={matchPayload.you}
             onGameOver={(payload) => {
+              incrementGamesPlayed();
               if (payload.youWon) playVictorySound();
               setGameOverPayload(payload);
               storage.setItem(STORAGE_KEYS.multiplayerRating, String(payload.newRating)).catch(() => {});
@@ -303,6 +342,7 @@ export default function Index() {
           <TrainingQuiz
             variant={trainingVariant}
             onBack={() => {
+              incrementGamesPlayed();
               setTrainingVariant(null);
               setScreen('training_select');
             }}
@@ -322,6 +362,41 @@ export default function Index() {
           />
         )}
       </View>
+
+      <Modal visible={showSupportModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Do you like Aoe2Quiz? Do you want to support the project?</Text>
+            <Text style={styles.modalDisclaimer}>
+              (We will never show you this window again no matter what you click)
+            </Text>
+            <View style={styles.modalButtons}>
+              <SoundPressable
+                style={styles.modalButton}
+                onPress={() => {
+                  setShowSupportModal(false);
+                  setScreen('support');
+                }}
+              >
+                <Text style={styles.modalButtonText}>1</Text>
+              </SoundPressable>
+              <SoundPressable
+                style={styles.modalButton}
+                onPress={() => setShowSupportModal(false)}
+              >
+                <Text style={styles.modalButtonText}>2</Text>
+              </SoundPressable>
+              <SoundPressable
+                style={styles.modalButton}
+                onPress={() => setShowSupportModal(false)}
+              >
+                <Text style={styles.modalButtonText}>14</Text>
+              </SoundPressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -339,8 +414,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
-    paddingTop: 20,
+    paddingTop: 48,
     paddingBottom: 4,
     width: '100%',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    maxWidth: 360,
+    width: '100%',
+  },
+  modalTitle: {
+    fontFamily: 'Balthazar',
+    fontSize: 22,
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  modalDisclaimer: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+    fontStyle: 'italic',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  modalButton: {
+    backgroundColor: '#2e5560',
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+    minWidth: 72,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    fontFamily: 'Balthazar',
+    fontSize: 20,
+    color: '#fff',
   },
 });
