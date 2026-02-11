@@ -9,7 +9,11 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Native (let EAS Build run prebuild; do not commit generated android/ios)
+android/
+ios/
+
+# Native signing/assets (keep in gitignore even if android/ is committed)
 *.orig.*
 *.jks
 *.p8

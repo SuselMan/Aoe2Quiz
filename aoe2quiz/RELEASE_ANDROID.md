@@ -33,6 +33,21 @@
 
 ## 3. Сборка релизного AAB
 
+### Важно: папка android/ не коммитится
+
+Чтобы EAS Build не падал с ошибкой «No variants exist» у нативных модулей, папка **android/** добавлена в `.gitignore`. На сервере EAS при сборке сам запускает `expo prebuild` и генерирует актуальный Android-проект.
+
+**Один раз выполни** (если android/ уже была в репозитории):
+
+```bash
+cd aoe2quiz
+git rm -r --cached android
+git commit -m "Stop tracking android/; EAS will prebuild on build"
+git push
+```
+
+После этого при каждой сборке EAS будет создавать android/ заново — версии Gradle/AGP и нативных модулей будут совместимы.
+
 ### Вариант A: EAS Build (рекомендуется)
 
 1. Установить EAS CLI и войти в Expo:
