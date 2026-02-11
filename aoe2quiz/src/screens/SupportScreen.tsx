@@ -109,8 +109,10 @@ export default function SupportScreen({ onBack }: Props) {
         {cryptoRow(t('support.eth'), ETH_ADDRESS, 'eth')}
         {cryptoRow(t('support.usdtEth'), ETH_ADDRESS, 'usdtEth')}
         {cryptoRow(t('support.usdtTron'), USDT_TRON_ADDRESS, 'usdtTron')}
+        {/* Temporarily disabled: Boosty, Patreon
         {linkRow(t('support.boosty'), BOOSTY_URL)}
         {linkRow(t('support.patreon'), PATREON_URL)}
+        */}
       </ScrollView>
 
       <SoundPressable style={styles.backButton} onPress={onBack}>

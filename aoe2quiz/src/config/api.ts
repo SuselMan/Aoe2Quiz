@@ -5,7 +5,7 @@
  * - Production build: defaults to https://5re6.l.time4vps.cloud.
  */
 const PRODUCTION_URL = 'https://5re6.l.time4vps.cloud';
-const DEV_URL = 'http://localhost:3000';
+const DEV_URL = 'https://5re6.l.time4vps.cloud';
 
 export const MULTIPLAYER_SERVER_URL =
   (typeof process !== 'undefined' && process.env.EXPO_PUBLIC_MULTIPLAYER_SERVER_URL) ||

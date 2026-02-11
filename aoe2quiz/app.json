@@ -42,6 +42,12 @@
     "updates": {
       "checkAutomatically": "NEVER",
       "enabled": false
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "629680ff-3134-4b1f-bd49-3d8455ce18bf"
+      }
     }
   }
 }
