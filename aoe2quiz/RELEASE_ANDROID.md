@@ -6,7 +6,7 @@
 
 ## 1. Конфигурация проекта (уже сделано)
 
-- **app.json**: `version` (1.0.0), `android.package` (com.suselman.aoe2quiz), `android.versionCode` (1 для первого релиза).
+- **app.json**: `version` (1.0.0), `android.package` (com.suselman.aoe2quiz), `android.versionCode` (1 для первого релиза). Плагин **expo-build-properties** с `android.kotlinVersion: "2.0.21"` — для совместимости KSP/Gradle и устранения предупреждения «kspVersion is not defined».
 - **eas.json**: профили сборки и сабмита; для продакшена собирается **AAB** (Android App Bundle), не APK — так требует Google Play.
 
 При следующих релизах увеличивай `version` в app.json (например 1.0.1) и при использовании EAS Build можно оставить `autoIncrement: true` — `versionCode` будет увеличиваться автоматически.
