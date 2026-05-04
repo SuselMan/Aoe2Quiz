@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Aoe2Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="support.html">Support the project</a>
+      </nav>
+      <h1>Privacy Policy</h1>
+      <p class="muted">Aoe2Quiz &middot; Last updated: <span id="updated">—</span></p>
+    </header>
+
+    <p>
+      Aoe2Quiz ("the app") is a free, fan-made quiz game about Age of Empires II.
+      This page describes what data the app handles and why.
+    </p>
+
+    <h2>Summary</h2>
+    <ul>
+      <li>No accounts, no email, no phone number, no address, no location.</li>
+      <li>No advertising, no third-party analytics, no behavioural tracking.</li>
+      <li>Single-player and training modes work fully offline; nothing leaves your device.</li>
+      <li>Multiplayer requires a small amount of data to run matches and a leaderboard (see below).</li>
+    </ul>
+
+    <h2>Data stored on your device only</h2>
+    <p>The app uses local on-device storage to remember:</p>
+    <ul>
+      <li>Your selected language and music on/off setting.</li>
+      <li>Single-player progress (stars per level, total games played).</li>
+      <li>A locally generated <em>device identifier</em> (random UUID) — see below.</li>
+      <li>Your chosen multiplayer display name and civilization (also sent to the server when you play multiplayer).</li>
+    </ul>
+    <p>
+      This data is stored in the app's private storage on your device. Uninstalling the app removes it.
+      On Android, system-level Auto Backup may copy it to your Google account if you have that feature
+      enabled at the OS level — this is not controlled by the app.
+    </p>
+
+    <h2>Data sent to our server (multiplayer only)</h2>
+    <p>
+      The multiplayer mode connects to our backend (<code>5re6.l.time4vps.cloud</code>). Only when you
+      use multiplayer or open the leaderboard, the following is transmitted over HTTPS / WSS:
+    </p>
+    <ul>
+      <li>
+        <strong>Device identifier</strong> — a random UUID generated on first launch, stored on your
+        device. It is not your IMEI, not your advertising ID, and is not linked to any other identifier.
+        It is used to keep your rating tied to your device across matches and to deduplicate leaderboard
+        entries. You can effectively reset it by clearing app data or reinstalling.
+      </li>
+      <li>
+        <strong>Display name and civilization icon</strong> — chosen by you. These are shown to your
+        opponent during a match and on the public leaderboard.
+      </li>
+      <li>
+        <strong>Match data</strong> — per-question correctness flags and the final result, used to
+        compute your rating and match outcome.
+      </li>
+      <li>
+        <strong>Network metadata</strong> — your IP address is visible to the server during the
+        connection (this is inherent to any internet request) and may appear in temporary server logs
+        used for abuse prevention. It is not stored long-term and is not associated with your profile.
+      </li>
+    </ul>
+    <p>
+      We do not collect or store your real name, email, phone number, precise location, contacts, photos,
+      microphone, or any other device sensors.
+    </p>
+
+    <h2>Public information (leaderboard)</h2>
+    <p>
+      Your chosen display name, civilization icon, and rating are visible publicly to other players on
+      the in-app leaderboard. Do not enter personal information such as your real name, email, or phone
+      number as your display name.
+    </p>
+
+    <h2>Third-party services</h2>
+    <ul>
+      <li>
+        <strong>aoe2techtree.net</strong> — when the app starts it fetches a public game-data file
+        from <code>aoe2techtree.net</code> (units, civilizations, tech tree). No personal data is sent
+        to this service; it is a plain GET request for static content.
+      </li>
+      <li>
+        <strong>Google Play / Apple App Store</strong> — distribution and install reporting are handled
+        by the platform under its own privacy policy.
+      </li>
+      <li>
+        The app does <em>not</em> use Google Analytics, Firebase Analytics, AdMob, Facebook SDK, or any
+        other analytics/advertising SDK at this time. If this changes in the future, this page will be
+        updated and the change date will be reflected at the top.
+      </li>
+    </ul>
+
+    <h2>Children</h2>
+    <p>
+      The app is suitable for general audiences. It does not knowingly collect personal information from
+      children under 13. If you believe a child has provided personal information through the app, please
+      contact us and we will remove it.
+    </p>
+
+    <h2>Data retention and deletion</h2>
+    <p>
+      Local data is removed when you uninstall the app or clear its storage.
+      For multiplayer data on the server (device identifier, display name, civilization choice, rating,
+      match history), you can request deletion by emailing
+      <a href="mailto:i.pavluhin12@gmail.com">i.pavluhin12@gmail.com</a> with the device identifier
+      shown in the app or your in-game display name. Deletion is processed within 30 days.
+    </p>
+
+    <h2>Security</h2>
+    <p>
+      All network traffic between the app and the server uses HTTPS / WSS. We do not store passwords
+      because the app has no accounts.
+    </p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      We may update this page from time to time. The "Last updated" date at the top of this page will
+      reflect the most recent change. Material changes will also be communicated through an in-app
+      notice.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions, requests for data deletion, or other privacy concerns:
+      <a href="mailto:i.pavluhin12@gmail.com">i.pavluhin12@gmail.com</a>
+    </p>
+
+    <p class="disclaimer">
+      Aoe2Quiz is an unofficial, fan-made application. Age of Empires is a trademark of Microsoft
+      Corporation. This app is not affiliated with, endorsed by, or sponsored by Microsoft or Xbox
+      Game Studios.
+    </p>
+
+    <footer>
+      &copy; <span id="year"></span> Aoe2Quiz
+      &middot; <a href="index.html">Home</a>
+      &middot; <a href="support.html">Support</a>
+    </footer>
+  </div>
+  <script>
+    // Set "last updated" to file load date as a sensible placeholder; replace with a fixed date when
+    // you publish the policy version that you submit to Google Play / App Store.
+    document.getElementById('updated').textContent = '2026-05-04';
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

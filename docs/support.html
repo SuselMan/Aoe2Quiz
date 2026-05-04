@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — Aoe2Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="support.html">Support the project</a>
+      </nav>
+      <h1>Support the project</h1>
+      <p class="muted">Aoe2Quiz is a free, fan-made app. Donations are entirely voluntary.</p>
+    </header>
+
+    <p>
+      If Aoe2Quiz brought you some fun, you can throw a coin to keep the multiplayer server running.
+      There are no rewards, no perks — just gratitude.
+    </p>
+
+    <h2>Cryptocurrency</h2>
+
+    <div class="card">
+      <div class="crypto">
+        <div class="crypto-label">Bitcoin (BTC)</div>
+        <div class="address-row">
+          <span class="address" id="addr-btc">bc1qu0shj4wlpscrmys5jp90srmgacqtm660sa2gda</span>
+          <button class="copy" data-target="addr-btc">Copy</button>
+        </div>
+        <details>
+          <summary>Show QR code</summary>
+          <img src="qr/btc-qr.png" alt="Bitcoin QR code" loading="lazy" />
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="crypto">
+        <div class="crypto-label">Ethereum (ETH)</div>
+        <div class="address-row">
+          <span class="address" id="addr-eth">0xE73Ae0144c289C2bE01ee411B5cdd80f30481821</span>
+          <button class="copy" data-target="addr-eth">Copy</button>
+        </div>
+        <details>
+          <summary>Show QR code</summary>
+          <img src="qr/eth-qr.png" alt="Ethereum QR code" loading="lazy" />
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="crypto">
+        <div class="crypto-label">USDT (ERC-20, Ethereum network)</div>
+        <div class="address-row">
+          <span class="address" id="addr-usdt-eth">0xE73Ae0144c289C2bE01ee411B5cdd80f30481821</span>
+          <button class="copy" data-target="addr-usdt-eth">Copy</button>
+        </div>
+        <p class="muted">Send only USDT on the Ethereum (ERC-20) network. Other networks will be lost.</p>
+        <details>
+          <summary>Show QR code</summary>
+          <img src="qr/usdt-eth-qr.png" alt="USDT (ERC-20) QR code" loading="lazy" />
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="crypto">
+        <div class="crypto-label">USDT (TRC-20, Tron network)</div>
+        <div class="address-row">
+          <span class="address" id="addr-usdt-tron">TLv2X3TXJ8cs9KVSozMRynX91a1tyj2b3x</span>
+          <button class="copy" data-target="addr-usdt-tron">Copy</button>
+        </div>
+        <p class="muted">Send only USDT on the Tron (TRC-20) network. Other networks will be lost.</p>
+        <details>
+          <summary>Show QR code</summary>
+          <img src="qr/usdt-tron-qr.png" alt="USDT (TRC-20) QR code" loading="lazy" />
+        </details>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      Donations are voluntary, non-refundable gifts. They do not unlock any in-app content, do not
+      grant any access, and are not connected to any service obligation. Always double-check the
+      address and the network before sending. Cryptocurrency transactions are irreversible.
+    </p>
+
+    <p class="disclaimer">
+      Aoe2Quiz is an unofficial, fan-made application. Age of Empires is a trademark of Microsoft
+      Corporation. This app is not affiliated with, endorsed by, or sponsored by Microsoft or Xbox
+      Game Studios.
+    </p>
+
+    <footer>
+      &copy; <span id="year"></span> Aoe2Quiz
+      &middot; <a href="index.html">Home</a>
+      &middot; <a href="privacy.html">Privacy</a>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    document.querySelectorAll('button.copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (!target) return;
+        var text = target.textContent.trim();
+        var done = function () {
+          var original = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = original;
+            btn.classList.remove('copied');
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () {
+            // Fallback below
+            fallbackCopy(text, done);
+          });
+        } else {
+          fallbackCopy(text, done);
+        }
+      });
+    });
+
+    function fallbackCopy(text, done) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+      document.body.removeChild(ta);
+      done();
+    }
+  </script>
+</body>
+</html>

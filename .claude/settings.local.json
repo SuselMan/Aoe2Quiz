@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__sentry__find_organizations",
+      "mcp__sentry__get_issue_details",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash",
+      "WebFetch",
+      "WebSearch",
+      "mcp__figma-remote-mcp__get_design_context",
+      "mcp__figma-remote-mcp__get_screenshot",
+      "mcp__figma-remote-mcp__get_metadata",
+      "mcp__sentry__get_sentry_resource",
+      "mcp__sentry__search_issue_events",
+      "PowerShell(Set-Location \"C:\\\\projects\\\\hotkeys\\\\apps\\\\mobile\"; npx tsc --noEmit 2>&1 | Select-Object -First 80; \"exit=$LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\projects\\\\hotkeys\\\\apps\\\\mobile\"; npx tsc --noEmit 2>&1; \"exit=$LASTEXITCODE\")",
+      "PowerShell(Move-Item *)",
+      "Bash(dir C:projectsaoe2aoe2quiz *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "sentry",
+    "figma-remote-mcp"
+  ]
+}
